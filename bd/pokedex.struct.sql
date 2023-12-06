@@ -20,38 +20,38 @@ CREATE TABLE dex_types (
 
 -- Table dex_pokemon_stats
 CREATE TABLE dex_pokemon_stats (
-    pokemon_id INT,
+    pokedexId INT,
     HP INT,
     attack INT,
     defense INT,
     special_attack INT,
     special_defense INT,
     speed INT,
-    FOREIGN KEY (pokemon_id) REFERENCES dex_pokemons(id)
+    FOREIGN KEY (pokedexId) REFERENCES dex_pokemons(id)
 );
 
 -- Table dex_pokemon_types
 CREATE TABLE dex_pokemon_types (
-    pokemon_id INT,
-    type_id INT,
-    FOREIGN KEY (pokemon_id) REFERENCES dex_pokemons(id),
-    FOREIGN KEY (type_id) REFERENCES dex_types(id)
+    pokedexId INT,
+    typeId INT,
+    FOREIGN KEY (pokedexId) REFERENCES dex_pokemons(id),
+    FOREIGN KEY (typeId) REFERENCES dex_types(id)
 );
 
 -- Table dex_pokemon_evolutions
 CREATE TABLE dex_pokemon_evolutions (
-    pokemon_id INT,
+    pokedexId INT,
     evolution_pokedexId INT,
     evolution_name VARCHAR(255),
-    FOREIGN KEY (pokemon_id) REFERENCES dex_pokemons(id)
+    FOREIGN KEY (pokedexId) REFERENCES dex_pokemons(id)
 );
 
 -- Table dex_pokemon_pre_evolutions
 CREATE TABLE dex_pokemon_pre_evolutions (
-    pokemon_id INT,
+    pokedexId INT,
     pre_evolution_pokedexId INT,
     pre_evolution_name VARCHAR(255),
-    FOREIGN KEY (pokemon_id) REFERENCES dex_pokemons(id)
+    FOREIGN KEY (pokedexId) REFERENCES dex_pokemons(id)
 );
 
 

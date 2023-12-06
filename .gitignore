@@ -1,4 +1,6 @@
 .env
+public/img/pokemons/*
+public/img/types/*
 
 # Logs
 logs
