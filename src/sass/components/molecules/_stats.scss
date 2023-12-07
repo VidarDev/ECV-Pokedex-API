@@ -34,7 +34,8 @@ $component-name: stats-items;
   }
 
   &__value {
-    flex: 0 1 fit-content;
+    flex: 0 1 50px;
+    min-width: 50px;
     font-size: 1.5rem;
     line-height: 1;
     font-variation-settings: "wght" 550;

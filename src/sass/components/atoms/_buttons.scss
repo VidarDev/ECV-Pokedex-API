@@ -1,7 +1,7 @@
 $component-name: btn;
 
 .#{$component-name} {
-  display: inline;
+  display: inline-flex;
   align-items: center;
   font-family: var(--global-font-family-uno);
   background: none;

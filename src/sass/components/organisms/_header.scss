@@ -1,0 +1,20 @@
+$component-name: header;
+
+.#{$component-name} {
+  display: flex;
+  width: 100%;
+  height: fit-content;
+  padding: 20px 0;
+  justify-content: center;
+
+  form {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: .5rem;
+    height: fit-content;
+    background: var(--global-neutral-transparent-white);
+    width: max(25dvw, 200px);
+    border-radius: 8px;
+  }
+}
