@@ -5,7 +5,9 @@ class APIPokemon {
     }
 
     public function connexion() {
+        // Recupère l'URL de API dans le .env
         $apiUrl = $_ENV['API_URL'];
+
         return $apiUrl;
     }
 
@@ -13,101 +15,126 @@ class APIPokemon {
         // Décoder la réponse JSON en tableau PHP
         $data = json_decode($jsonResponse, true);
 
-        // Extraire les données requises
-        $extractedData = [
-            'id_pokedex' => isset($data['pokedexId']) ? $data['pokedexId'] : null,
-            'name' => isset($data['name']) ? $data['name'] : null,
-            'image' => isset($data['image']) ? $data['image'] : null,
-            'stats' => isset($data['stats']) ? $data['stats'] : null,
-            'generation' => isset($data['apiGeneration']) ? $data['apiGeneration'] : null,
+        return $data;
+    }
+
+    public function formatTypeData($data) {
+
+        $extractedPokemonData = [
+            'typeId' => isset($data['id']) ? $data['id'] : null,
+            'typeName' => isset($data['name']) ? $data['name'] : null,
+            'typeImage' => isset($data['image']) ? $data['image'] : null,
+            'typeEnglishName' => isset($data['englishName']) ? $data['englishName'] : null,
+        ];
+
+        return $extractedPokemonData;
+    }
+
+    public function formatPokemonData($data) {
+
+        $extractedPokemonData = [
+            'pokemonId' => isset($data['pokedexId']) ? $data['pokedexId'] : null,
+            'pokemonName' => isset($data['name']) ? $data['name'] : null,
+            'pokemonImage' => isset($data['image']) ? $data['image'] : null,
+            'pokemonStats' => isset($data['stats']) ? $data['stats'] : null,
+            'pokemonGeneration' => isset($data['apiGeneration']) ? $data['apiGeneration'] : null,
         ];
 
         $typeCount = count($data['apiTypes'] ?? []);
         if ($typeCount > 0) {
-            $extractedData['id_types_name_1'] = $data['apiTypes'][0]['name'];
-            $extractedData['id_types_image_1'] = $data['apiTypes'][0]['image'];
-            if ($typeCount > 1) {
-                $extractedData['id_types_name_2'] = $data['apiTypes'][1]['name'];
-                $extractedData['id_types_image_2'] = $data['apiTypes'][1]['image'];
-            } else {
-                $extractedData['id_types_name_2'] = null;
-                $extractedData['id_types_image_2'] = null;
-            }
-        } else {
-            $extractedData['id_types_name_1'] = null;
-            $extractedData['id_types_image_1'] = null;
-            $extractedData['id_types_name_2'] = null;
-            $extractedData['id_types_image_2'] = null;
+            $firstType = $data['apiTypes'][0];
+            $secondType = $data['apiTypes'][1] ?? null;
+
+            $extractedPokemonData['pokemonTypes']['fist_name'] = isset($firstType['name']) ? $firstType['name'] : null;
+            $extractedPokemonData['pokemonTypes']['fist_image'] = isset($firstType['image']) ? $firstType['image'] : null;
+            $extractedPokemonData['pokemonTypes']['second_name'] = isset($secondType['name']) ? $secondType['name'] : null;
+            $extractedPokemonData['pokemonTypes']['second_image'] = isset($secondType['image']) ? $secondType['image'] : null;
+
         }
 
-        // Aplatir les évolutions (notez que cela ne fonctionnera que pour une seule évolution)
-        if (!empty($data['apiEvolutions'])) {
+        $nextEvolutionCount = count($data['apiEvolutions'] ?? []);
+        if ($nextEvolutionCount > 0) {
             $firstEvolution = $data['apiEvolutions'][0];
-            $extractedData['evolution_name'] = $firstEvolution['name'];
-            $extractedData['evolution_id_pokedex'] = $firstEvolution['pokedexId'];
-        } else {
-            $extractedData['evolution_name'] = null;
-            $extractedData['evolution_id_pokedex'] = null;
+
+            $extractedPokemonData['pokemonNextEvolId'] = isset($firstEvolution['pokedexId']) ? $firstEvolution['pokedexId'] : null;
+            $extractedPokemonData['pokemonNextEvolName'] = isset($firstEvolution['name']) ? $firstEvolution['name'] : null;
         }
 
-        // Aplatir les évolutions (notez que cela ne fonctionnera que pour une seule évolution)
         if (!empty($data['apiPreEvolution']) && is_array($data['apiPreEvolution'])) {
-            $extractedData['pre_evolution_name'] = $data['apiPreEvolution']['name'] ?? null;
-            $extractedData['pre_evolution_id_pokedex'] = $data['apiPreEvolution']['pokedexIdd'] ?? null;
-        } else {
-            $extractedData['pre_evolution_name'] = null;
-            $extractedData['pre_evolution_id_pokedex'] = null;
+            $extractedPokemonData['pokemonPrevEvolId'] = $data['apiPreEvolution']['pokedexIdd'] ?? null;
+            $extractedPokemonData['pokemonPrevEvolName'] = $data['apiPreEvolution']['name'] ?? null;
         }
 
-        return $extractedData;
+        return $extractedPokemonData;
     }
 
-    public function getPokemonByPokedexID($pokedexID) {
+    public function getPokemonByIdOrName($input) {
+        $formatInput = formatString($input);
+
+        // Déterminer si l'entrée est un ID ou un nom
+        $isId = is_numeric($formatInput);
+
+        // Essayer de récupérer le Pokémon de la base de données
+        $pokemon = $isId ? $this->getPokemonById($formatInput) : $this->getPokemonByName($formatInput);
+
+        return $pokemon;
+    }
+
+    public function getPokemonById($pokedexID) {
         $apiUrl = $this->connexion();
 
-        $reponseData = file_get_contents("{$apiUrl}/pokemon/{$pokedexID}");
+        // GET request
+        $reponse = file_get_contents("{$apiUrl}/pokemon/{$pokedexID}");
 
-        $extractedData = $this->JSON($reponseData);
+        $extractedData = $this->formatPokemonData($this->JSON($reponse));
         return $extractedData;
     }
 
     public function getPokemonByName($name) {
         $apiUrl = $this->connexion();
 
-        $reponseData = file_get_contents("{$apiUrl}/pokemon/{$name}");
+        // GET request
+        $reponse = file_get_contents("{$apiUrl}/pokemon/{$name}");
 
-        $extractedData = $this->JSON($reponseData);
+        $extractedData = $this->formatPokemonData($this->JSON($reponse));
         return $extractedData;
     }
 
-    public function getTypes() {
+    public function getTypesAll() {
         $apiUrl = $this->connexion();
 
-        $reponseData = file_get_contents("{$apiUrl}/types/");
-        $datas = json_decode($reponseData, true);
+        // GET request
+        $reponse = file_get_contents("{$apiUrl}/types");
+        $reponseDecoded = $this->JSON($reponse);
 
-        $extractedData = [];
-        $i = 0;
+        $extractedData =[];
 
-        if ($datas && is_array($datas)) {
-            foreach ($datas as $data) {
-                $extractedData[$i]['image'] = $data['image'];
-                $extractedData[$i]['name'] = $data['name'];
-
-                $i++;
-            }
+        if ($reponseDecoded && is_array($reponseDecoded)) {
+            foreach ($reponseDecoded as $data) {
+                $extractedData[] = ($this->formatTypeData($data));
+            };
         }
 
         return $extractedData;
     }
 
-//    public function getPokemonAll() {
-//
-//    }
+    public function getPokemonsAll() {
+        $apiUrl = $this->connexion();
 
-//    public function getPokemonByTypes() {
-//
-//    }
+        // GET request
+        $reponse = file_get_contents("{$apiUrl}/pokemon");
+        $reponseDecoded = $this->JSON($reponse);
+
+        $extractedData =[];
+
+        if ($reponseDecoded && is_array($reponseDecoded)) {
+            foreach ($reponseDecoded as $data) {
+                $extractedData[] = ($this->formatPokemonData($data));
+            };
+        }
+
+        return $extractedData;
+    }
 }
 
 ?>
