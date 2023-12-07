@@ -1,0 +1,43 @@
+$component-name: stats-items;
+
+.#{$component-name} {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  gap: 1rem;
+
+  &__label {
+    flex: 0 1 200px;
+    min-width: 200px;
+    font-size: 1.5rem;
+    line-height: 1;
+    font-variation-settings: "wght" 550;
+    white-space: nowrap;
+  }
+
+  &__progress {
+    position: relative;
+    flex: 1 1 100%;
+    height: 2rem;
+    background: var(--global-neutral-transparent-white);
+    border-radius: 0.5rem;
+
+    .indicator {
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      background: var(--global-neutral-white);
+      border-radius: 0.5rem;
+    }
+  }
+
+  &__value {
+    flex: 0 1 fit-content;
+    font-size: 1.5rem;
+    line-height: 1;
+    font-variation-settings: "wght" 550;
+    white-space: nowrap;
+  }
+}

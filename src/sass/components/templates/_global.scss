@@ -1,0 +1,9 @@
+body {
+  background: var(--global-neutral-black);
+  min-height: 100vh;
+
+  #main {
+    width: min(80dvw, 1400px);
+    margin-inline: auto;
+  }
+}

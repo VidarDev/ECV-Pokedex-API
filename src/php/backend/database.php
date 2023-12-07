@@ -142,7 +142,7 @@ class DAO {
         return $stmt->fetch();
     }
 
-    public function getPokemonGeneration($generation) {
+    public function getPokemonByGeneration($generation) {
         $pdo = $this->connexion();
 
         $query = "
@@ -186,7 +186,7 @@ class DAO {
         $stmt = $pdo->prepare($query);
         $stmt->execute([$generation]);
 
-        return $stmt->fetch();
+        return $stmt->fetchAll();
     }
 
     public function getTypeIdByName($name) {
@@ -326,71 +326,74 @@ class DAO {
     }
 
     public function UIPokemonCard($pokemon) {
+        $formatPokedexId = formatPokedexId($pokemon['pokemonId']);
+
         return "
-            <div class='pokemon__card {$pokemon['type1_name']}'>
-                <img src='{$pokemon['image']}' role='img' alt='{$pokemon['name']}' title='{$pokemon['name']}' aria-label='{$pokemon['name']}' loading='lazy' width='52' height='52'/>
-                <h2>#{$pokemon['id_pokedex']} {$pokemon['name']}</h2>
+            <div class='pokemon__card {$pokemon['pokemonTypesFirstName_EN']}'>
+                <img src='{$pokemon['pokemonImage']}' role='img' alt='{$pokemon['pokemonName']}' title='{$pokemon['pokemonName']}' aria-label='{$pokemon['pokemonName']}' loading='lazy' width='52' height='52'/>
+                <h2>#{$formatPokedexId} {$pokemon['pokemonName']}</h2>
             </div>
         ";
     }
 
     public function UIPokemon($pokemon) {
+        $formatPokedexId = formatPokedexId($pokemon['pokemonId']);
+
         return "
-            <div class='pokemon'>
-               <div class='id-background'>
-                    <span class='id'>#{$pokemon['id_pokedex']}</span>
+            <div class='pokemon {$pokemon['pokemonTypesFirstName_EN']}'>
+               <span class='pokemon__pokedex-id'>#{$formatPokedexId}</span>
+               <div class='pokemon-top'>
+                  <div class='pokemon-top__identity'>
+                    <div class='pokemon-types'>
+                        <span>
+                            <img src='{$pokemon['pokemonTypesFirstImage']}' role='img' alt='{$pokemon['pokemonTypesFirstName']}' title='{$pokemon['pokemonTypesFirstName']}' aria-label='{$pokemon['pokemonTypesFirstName']}' loading='lazy' width='200' height='200'/>
+                            {$pokemon['pokemonTypesFirstName']}
+                        </span>
+                        <span>
+                            <img src='{$pokemon['pokemonTypesSecondImage']}' role='img' alt='{$pokemon['pokemonTypesSecondName']}' title='{$pokemon['pokemonTypesSecondName']}' aria-label='{$pokemon['pokemonTypesSecondName']}' loading='lazy' width='200' height='200'/>
+                            {$pokemon['pokemonTypesSecondName']}
+                        </span>
+                    </div>
+                    <h1 class='pokemon-name'>{$pokemon['pokemonName']}</h1>
+                  </div>
+                  <div class='pokemon-top__images'>
+                     <div class='pokemon-current'>
+                        <img src='{$pokemon['pokemonImage']}' role='img' alt='{$pokemon['pokemonName']}' title='{$pokemon['pokemonName']}' aria-label='{$pokemon['pokemonName']}' loading='lazy' width='200' height='200'/>
+                     </div>
+                     <div class='pokemon-evolutions'>
+                        <h2 class='screen-reader-only'>Evolutions</h2>
+                        <div class='pokemon-evolutions__next'>
+                            <img src='{$pokemon['pokemonImage']}' role='img' alt='{$pokemon['pokemonNextEvolName']}' title='{$pokemon['pokemonNextEvolName']}' aria-label='{$pokemon['pokemonNextEvolName']}' loading='lazy' width='200' height='200'/>
+                            <h3 class='pokemon-name'>{$pokemon['pokemonNextEvolName']}</h3>
+                        </div>
+                        <div class='pokemon-evolutions__prev'>
+                            <img src='{$pokemon['pokemonImage']}' role='img' alt='{$pokemon['pokemonPrevEvolName']}' title='{$pokemon['pokemonPrevEvolName']}' aria-label='{$pokemon['pokemonPrevEvolName']}' loading='lazy' width='200' height='200'/>
+                            <h3 class='pokemon-name'>{$pokemon['pokemonPrevEvolName']}</h3>
+                        </div>
+                     </div>
+                  </div>
                </div>
-               <div class='pokemon__identity'>
-                <img src='{$pokemon['image']}' role='img' alt='{$pokemon['name']}' title='{$pokemon['name']}' aria-label='{$pokemon['name']}' loading='lazy' width='52' height='52'/>
-                <div class='pokemon-informations'>
-                    <h2>{$pokemon['name']}</h2>
-                    <p>ID: {$pokemon['id_pokedex']}</p>
-                </div>
-               </div>
-               <div class='pokemon__evolution'>
-                    <img src='1' role='img' alt='{$pokemon['name']}' title='{$pokemon['name']}' aria-label='{$pokemon['name']}' loading='lazy' width='52' height='52'/>
-                    <h3>{$pokemon['evolution_name']}</h3>
-                </div>
-                <div class='pokemon__pre-evolution'>
-                    <img src='1' role='img' alt='{$pokemon['name']}' title='{$pokemon['name']}' aria-label='{$pokemon['name']}' loading='lazy' width='52' height='52'/>
-                    <h3>{$pokemon['pre_evolution_name']}</h3>
-                </div>
-                <div class='pokemon__stats-title'>
-                    <h3>Stats</h3>
-                </div>
-                <div class='pokemon__stats'>
-                    <div class='pokemon__pre-evolution__items'>
-                        <h4>HP</h4>
-                        <progress max='255' value='{$pokemon['hp']}'></progress>
-                        <p>{$pokemon['hp']}</p>
+               <div class='pokemon-bottom'>
+                    <h2 class='pokemon-bottom__title'>Stats</h2>
+                    <div class='pokemon-bottom__wrapper'>
+                         <div class='stats-items'>
+                            <h3 class='stats-items__label'>HP</h3>
+                            <div class='stats-items__progress'>
+                                <span class='indicator' style='width: calc(({$pokemon['pokemonStatsHp']} * 100%) / 255);'></span>
+                            </div>
+                            <span class='stats-items__value'>{$pokemon['pokemonStatsHp']}</span>
+                         </div>
+                         <div class='stats-items'>
+                            <h3 class='stats-items__label'>Special Defense</h3>
+                            <div class='stats-items__progress'>
+                                <span class='indicator' style='width: calc(({$pokemon['pokemonStatsSpecialDefense']} * 100%) / 255);'></span>
+                            </div>
+                            <span class='stats-items__value'>{$pokemon['pokemonStatsSpecialDefense']}</span>
+                         </div>
                     </div>
-                    <div class='pokemon__pre-evolution__items'>
-                        <h4>Attack</h4>
-                        <progress max='255' value='{$pokemon['attack']}'></progress>
-                        <p>{$pokemon['attack']}</p>
-                    </div>
-                    <div class='pokemon__pre-evolution__items'>
-                        <h4>Defense</h4>
-                        <progress max='255' value='{$pokemon['defense']}'></progress>
-                        <p>{$pokemon['defense']}</p>
-                    </div>
-                    <div class='pokemon__pre-evolution__items'>
-                        <h4>Special Attack</h4>
-                        <progress max='255' value='{$pokemon['special_attack']}'></progress>
-                        <p>{$pokemon['special_attack']}</p>
-                    </div>
-                    <div class='pokemon__pre-evolution__items'>
-                        <h4>Special Defense	</h4>
-                        <progress max='255' value='{$pokemon['special_defense']}'></progress>
-                        <p>{$pokemon['special_defense']}</p>
-                    </div>
-                    <div class='pokemon__pre-evolution__items'>
-                        <h4>Speed</h4>
-                        <progress max='255' value='{$pokemon['speed']}'></progress>
-                        <p>{$pokemon['speed']}</p>
                     </div>
                 </div>
-            </div>
+           </div>
         ";
     }
 }

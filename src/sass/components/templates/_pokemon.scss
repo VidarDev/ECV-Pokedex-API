@@ -1,109 +1,58 @@
 body {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.63) 0%, rgba(0, 0, 0, 0.63) 100%), var(--grass);
-  min-height: 100vh;
-  padding-inline: 10vw;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.63) 0%, rgba(0, 0, 0, 0.63) 100%), var(--unknow);
 
-  &:has(.Normal) {
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.63) 0%, rgba(0, 0, 0, 0.63) 100%), var(--1);
+  &:has(.pokemon.fire) {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.63) 0%, rgba(0, 0, 0, 0.63) 100%), var(--fire);
   }
-  &:has(.Combat) {
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.63) 0%, rgba(0, 0, 0, 0.63) 100%), var(--2);
+  &:has(.pokemon.grass) {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.63) 0%, rgba(0, 0, 0, 0.63) 100%), var(--grass);
   }
-  &:has(.Vol) {
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.63) 0%, rgba(0, 0, 0, 0.63) 100%), var(--3);
+  &:has(.pokemon.steel) {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.63) 0%, rgba(0, 0, 0, 0.63) 100%), var(--steel);
   }
-  &:has(.Poison) {
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.63) 0%, rgba(0, 0, 0, 0.63) 100%), var(--4);
+  &:has(.pokemon.water) {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.63) 0%, rgba(0, 0, 0, 0.63) 100%), var(--water);
   }
-  &:has(.Sol) {
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.63) 0%, rgba(0, 0, 0, 0.63) 100%), var(--5);
+  &:has(.pokemon.psychic) {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.63) 0%, rgba(0, 0, 0, 0.63) 100%), var(--psychic);
   }
-  &:has(.Roche) {
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.63) 0%, rgba(0, 0, 0, 0.63) 100%), var(--6);
+  &:has(.pokemon.ground) {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.63) 0%, rgba(0, 0, 0, 0.63) 100%), var(--ice);
   }
-  &:has(.Insecte) {
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.63) 0%, rgba(0, 0, 0, 0.63) 100%), var(--7);
+  &:has(.pokemon.flying) {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.63) 0%, rgba(0, 0, 0, 0.63) 100%), var(--flying);
   }
-  &:has(.Spectre) {
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.63) 0%, rgba(0, 0, 0, 0.63) 100%), var(--8);
+  &:has(.pokemon.ghost) {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.63) 0%, rgba(0, 0, 0, 0.63) 100%), var(--ghost);
   }
-  &:has(.Acier) {
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.63) 0%, rgba(0, 0, 0, 0.63) 100%), var(--9);
+  &:has(.pokemon.normal) {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.63) 0%, rgba(0, 0, 0, 0.63) 100%), var(--normal);
   }
-  &:has(.Feu) {
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.63) 0%, rgba(0, 0, 0, 0.63) 100%), var(--10);
+  &:has(.pokemon.poison) {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.63) 0%, rgba(0, 0, 0, 0.63) 100%), var(--poison);
   }
-  &:has(.Eau) {
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.63) 0%, rgba(0, 0, 0, 0.63) 100%), var(--11);
+  &:has(.pokemon.rock) {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.63) 0%, rgba(0, 0, 0, 0.63) 100%), var(--rock);
   }
-  &:has(.Plante) {
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.63) 0%, rgba(0, 0, 0, 0.63) 100%), var(--12);
+  &:has(.pokemon.fighting) {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.63) 0%, rgba(0, 0, 0, 0.63) 100%), var(--fighting);
   }
-  &:has(.Électrik) {
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.63) 0%, rgba(0, 0, 0, 0.63) 100%), var(--13);
+  &:has(.pokemon.dark) {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.63) 0%, rgba(0, 0, 0, 0.63) 100%), var(--dark);
   }
-  &:has(.Psy) {
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.63) 0%, rgba(0, 0, 0, 0.63) 100%), var(--14);
+  &:has(.pokemon.bug) {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.63) 0%, rgba(0, 0, 0, 0.63) 100%), var(--bug);
   }
-  &:has(.Glace) {
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.63) 0%, rgba(0, 0, 0, 0.63) 100%), var(--15);
+  &:has(.pokemon.dragon) {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.63) 0%, rgba(0, 0, 0, 0.63) 100%), var(--dragon);
   }
-  &:has(.Dragon) {
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.63) 0%, rgba(0, 0, 0, 0.63) 100%), var(--16);
+  &:has(.pokemon.electric) {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.63) 0%, rgba(0, 0, 0, 0.63) 100%), var(--electric);
   }
-  &:has(.Ténèbres) {
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.63) 0%, rgba(0, 0, 0, 0.63) 100%), var(--17);
+  &:has(.pokemon.fairy) {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.63) 0%, rgba(0, 0, 0, 0.63) 100%), var(--fairy);
   }
-  &:has(.Fée) {
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.63) 0%, rgba(0, 0, 0, 0.63) 100%), var(--18);
-  }
-
-  .pokemon {
-    position: relative;
-    display: grid;
-    grid-template-columns: auto repeat(4, 1fr);
-    grid-template-rows: repeat(3, auto);
-    grid-column-gap: 2rem;
-    grid-row-gap: 1.5rem;
-
-    .pokemon__identity {
-      grid-area: 1 / 1 / 3 / 5;
-      display: flex;
-
-      img {
-        height: 20vh;
-        width: auto;
-      }
-    }
-
-    .pokemon__evolution {
-      grid-area: 1 / 5 / 2 / 6;
-    }
-
-    .pokemon__pre-evolution {
-      grid-area: 2 / 5 / 3 / 6;
-    }
-
-    .pokemon__stats-title {
-      grid-area: 3 / 1 / 4 / 2;
-    }
-
-    .pokemon__stats {
-      grid-area: 3 / 2 / 4 / 6;
-    }
-
-    .id-background {
-      position: absolute;
-      z-index: -1;
-      left: 50%;
-      top: 0;
-      transform: translateX(-50%);
-
-      .id {
-        font-size: 10vw;
-        font-weight: var(--global-font-weight-bold);
-        color: rgba(255,255,255,.22);
-      }
-    }
+  &:has(.pokemon.shadow) {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.63) 0%, rgba(0, 0, 0, 0.63) 100%), var(--shadow);
   }
 }
