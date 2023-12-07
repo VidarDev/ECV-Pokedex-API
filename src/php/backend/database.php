@@ -77,31 +77,36 @@ class DAO {
 
         $query = "
             SELECT 
-                p.pokedexId,
+                p.id_pokedex,
                 p.name,
                 p.image,
-                p.apiGeneration,
-                ps.HP,
+                p.generation,
+                ps.hp,
                 ps.attack,
                 ps.defense,
                 ps.special_attack,
                 ps.special_defense,
                 ps.speed,
-                pp.pre_evolution_pokedexId AS preEvolPokedexId,
-                pp.pre_evolution_name AS preEvolName,
-                pe.evolution_pokedexId AS evolPokedexId,
-                pe.evolution_name AS evolName,
-                GROUP_CONCAT(t.name SEPARATOR ',') AS typeNames,
-                GROUP_CONCAT(t.image SEPARATOR ',') AS typeImages
+                pe.evolution_id_pokedex,
+                pe.evolution_name,
+                pp.pre_evolution_id_pokedex,
+                pp.pre_evolution_name,
+                pt.id_types_1,
+                pt.id_types_2,
+                t1.name AS type1_name,
+                t1.image AS type1_image,
+                t2.name AS type2_name,
+                t2.image AS type2_image
             FROM 
                 `dex_pokemons` p
-                LEFT JOIN `dex_pokemon_stats` ps ON p.pokedexId = ps.pokedexId
-                LEFT JOIN `dex_pokemon_types` pt ON p.pokedexId = pt.pokedexId
-                LEFT JOIN `dex_pokemon_pre_evolutions` pp ON p.pokedexId = pp.pokedexId
-                LEFT JOIN `dex_pokemon_evolutions` pe ON p.pokedexId = pe.pokedexId
-                LEFT JOIN `dex_types` t ON pt.pokedexId = t.id
+                LEFT JOIN `dex_pokemon_stats` ps ON p.id_pokedex = ps.id_pokedex
+                LEFT JOIN `dex_pokemon_types` pt ON p.id_pokedex = pt.id_pokedex
+                LEFT JOIN `dex_pokemon_pre_evolutions` pp ON p.id_pokedex = pp.id_pokedex
+                LEFT JOIN `dex_pokemon_evolutions` pe ON p.id_pokedex = pe.id_pokedex 
+                LEFT JOIN `dex_types` t1 ON pt.id_types_1 = t1.id
+                LEFT JOIN `dex_types` t2 ON pt.id_types_2 = t2.id
             GROUP BY 
-                p.pokedexId;
+                p.id_pokedex;
         ";
 
         $stmt = $pdo->prepare($query);
@@ -115,33 +120,38 @@ class DAO {
 
         $query = "
             SELECT 
-                p.pokedexId,
+                p.id_pokedex,
                 p.name,
                 p.image,
-                p.apiGeneration,
-                ps.HP,
+                p.generation,
+                ps.hp,
                 ps.attack,
                 ps.defense,
                 ps.special_attack,
                 ps.special_defense,
                 ps.speed,
-                pp.pre_evolution_pokedexId AS preEvolPokedexId,
-                pp.pre_evolution_name AS preEvolName,
-                pe.evolution_pokedexId AS evolPokedexId,
-                pe.evolution_name AS evolName,
-                GROUP_CONCAT(t.name SEPARATOR ',') AS typeNames,
-                GROUP_CONCAT(t.image SEPARATOR ',') AS typeImages
+                pe.evolution_id_pokedex,
+                pe.evolution_name,
+                pp.pre_evolution_id_pokedex,
+                pp.pre_evolution_name,
+                pt.id_types_1,
+                pt.id_types_2,
+                t1.name AS type1_name,
+                t1.image AS type1_image,
+                t2.name AS type2_name,
+                t2.image AS type2_image
             FROM 
                 `dex_pokemons` p
-                LEFT JOIN `dex_pokemon_stats` ps ON p.pokedexId = ps.pokedexId
-                LEFT JOIN `dex_pokemon_types` pt ON p.pokedexId = pt.pokedexId
-                LEFT JOIN `dex_pokemon_pre_evolutions` pp ON p.pokedexId = pp.pokedexId
-                LEFT JOIN `dex_pokemon_evolutions` pe ON p.pokedexId = pe.pokedexId
-                LEFT JOIN `dex_types` t ON pt.pokedexId = t.id
+                LEFT JOIN `dex_pokemon_stats` ps ON p.id_pokedex = ps.id_pokedex
+                LEFT JOIN `dex_pokemon_types` pt ON p.id_pokedex = pt.id_pokedex
+                LEFT JOIN `dex_pokemon_pre_evolutions` pp ON p.id_pokedex = pp.id_pokedex
+                LEFT JOIN `dex_pokemon_evolutions` pe ON p.id_pokedex = pe.id_pokedex 
+                LEFT JOIN `dex_types` t1 ON pt.id_types_1 = t1.id
+                LEFT JOIN `dex_types` t2 ON pt.id_types_2 = t2.id
             WHERE 
-                p.pokedexId = ?
+                p.id_pokedex = ?
             GROUP BY 
-                p.pokedexId;
+                p.id_pokedex;
         ";
 
         $stmt = $pdo->prepare($query);
@@ -154,34 +164,39 @@ class DAO {
         $pdo = $this->connexion();
 
         $query = "
-            SELECT 
-                p.pokedexId,
+           SELECT 
+                p.id_pokedex,
                 p.name,
                 p.image,
-                p.apiGeneration,
-                ps.HP,
+                p.generation,
+                ps.hp,
                 ps.attack,
                 ps.defense,
                 ps.special_attack,
                 ps.special_defense,
                 ps.speed,
-                pp.pre_evolution_pokedexId AS preEvolPokedexId,
-                pp.pre_evolution_name AS preEvolName,
-                pe.evolution_pokedexId AS evolPokedexId,
-                pe.evolution_name AS evolName,
-                GROUP_CONCAT(t.name SEPARATOR ',') AS typeNames,
-                GROUP_CONCAT(t.image SEPARATOR ',') AS typeImages
+                pe.evolution_id_pokedex,
+                pe.evolution_name,
+                pp.pre_evolution_id_pokedex,
+                pp.pre_evolution_name,
+                pt.id_types_1,
+                pt.id_types_2,
+                t1.name AS type1_name,
+                t1.image AS type1_image,
+                t2.name AS type2_name,
+                t2.image AS type2_image
             FROM 
                 `dex_pokemons` p
-                LEFT JOIN `dex_pokemon_stats` ps ON p.pokedexId = ps.pokedexId
-                LEFT JOIN `dex_pokemon_types` pt ON p.pokedexId = pt.pokedexId
-                LEFT JOIN `dex_pokemon_pre_evolutions` pp ON p.pokedexId = pp.pokedexId
-                LEFT JOIN `dex_pokemon_evolutions` pe ON p.pokedexId = pe.pokedexId
-                LEFT JOIN `dex_types` t ON pt.pokedexId = t.id
+                LEFT JOIN `dex_pokemon_stats` ps ON p.id_pokedex = ps.id_pokedex
+                LEFT JOIN `dex_pokemon_types` pt ON p.id_pokedex = pt.id_pokedex
+                LEFT JOIN `dex_pokemon_pre_evolutions` pp ON p.id_pokedex = pp.id_pokedex
+                LEFT JOIN `dex_pokemon_evolutions` pe ON p.id_pokedex = pe.id_pokedex 
+                LEFT JOIN `dex_types` t1 ON pt.id_types_1 = t1.id
+                LEFT JOIN `dex_types` t2 ON pt.id_types_2 = t2.id
             WHERE 
                 p.name = ?
             GROUP BY 
-                p.pokedexId;
+                p.id_pokedex;
         ";
 
         $stmt = $pdo->prepare($query);
@@ -195,33 +210,38 @@ class DAO {
 
         $query = "
             SELECT 
-                p.pokedexId,
+                p.id_pokedex,
                 p.name,
                 p.image,
-                p.apiGeneration,
-                ps.HP,
+                p.generation,
+                ps.hp,
                 ps.attack,
                 ps.defense,
                 ps.special_attack,
                 ps.special_defense,
                 ps.speed,
-                pp.pre_evolution_pokedexId AS preEvolPokedexId,
-                pp.pre_evolution_name AS preEvolName,
-                pe.evolution_pokedexId AS evolPokedexId,
-                pe.evolution_name AS evolName,
-                GROUP_CONCAT(t.name SEPARATOR ',') AS typeNames,
-                GROUP_CONCAT(t.image SEPARATOR ',') AS typeImages
+                pe.evolution_id_pokedex,
+                pe.evolution_name,
+                pp.pre_evolution_id_pokedex,
+                pp.pre_evolution_name,
+                pt.id_types_1,
+                pt.id_types_2,
+                t1.name AS type1_name,
+                t1.image AS type1_image,
+                t2.name AS type2_name,
+                t2.image AS type2_image
             FROM 
                 `dex_pokemons` p
-                LEFT JOIN `dex_pokemon_stats` ps ON p.pokedexId = ps.pokedexId
-                LEFT JOIN `dex_pokemon_types` pt ON p.pokedexId = pt.pokedexId
-                LEFT JOIN `dex_pokemon_pre_evolutions` pp ON p.pokedexId = pp.pokedexId
-                LEFT JOIN `dex_pokemon_evolutions` pe ON p.pokedexId = pe.pokedexId
-                LEFT JOIN `dex_types` t ON pt.pokedexId = t.id
+                LEFT JOIN `dex_pokemon_stats` ps ON p.id_pokedex = ps.id_pokedex
+                LEFT JOIN `dex_pokemon_types` pt ON p.id_pokedex = pt.id_pokedex
+                LEFT JOIN `dex_pokemon_pre_evolutions` pp ON p.id_pokedex = pp.id_pokedex
+                LEFT JOIN `dex_pokemon_evolutions` pe ON p.id_pokedex = pe.id_pokedex 
+                LEFT JOIN `dex_types` t1 ON pt.id_types_1 = t1.id
+                LEFT JOIN `dex_types` t2 ON pt.id_types_2 = t2.id
             WHERE 
-                p.apiGeneration = ?
+                p.generation = ?
             GROUP BY 
-                p.pokedexId;
+                p.id_pokedex;
         ";
 
         $stmt = $pdo->prepare($query);
@@ -240,6 +260,7 @@ class DAO {
 
         if(!$stmt->fetch()) {
             $this->addTypes();
+            $stmt->execute([$name]);
         }
 
         return $stmt->fetch();
@@ -278,14 +299,14 @@ class DAO {
         try {
             $pdo->beginTransaction();
 
-            $pokemonId = $pokemonData['pokedexId'];
+            $pokemonId = $pokemonData['id_pokedex'];
 
             // Télécharger l'image du Pokémon
-            $imagePath = $this->downloadPokemonImage($pokemonData['image'], $pokemonData['pokedexId'], $pokemonData['name']);
+            $imagePath = $this->downloadPokemonImage($pokemonData['image'], $pokemonData['id_pokedex'], $pokemonData['name']);
 
             // Insertion des informations générales du Pokémon
             $query = "
-                INSERT INTO `dex_pokemons` (pokedexId, name, image, apiGeneration) 
+                INSERT INTO `dex_pokemons` (id_pokedex, name, image, generation) 
                 VALUES (?, ?, ?, ?)
             ";
 
@@ -294,12 +315,12 @@ class DAO {
                 $pokemonId,
                 $pokemonData['name'],
                 $imagePath,
-                $pokemonData['apiGeneration']
+                $pokemonData['generation']
             ]);
 
             // Insertion des statistiques
             $query = "
-                INSERT INTO `dex_pokemon_stats` (pokedexId, HP, attack, defense, special_attack, special_defense, speed) 
+                INSERT INTO `dex_pokemon_stats` (id_pokedex, hp, attack, defense, special_attack, special_defense, speed) 
                 VALUES (?, ?, ?, ?, ?, ?, ?)
             ";
 
@@ -316,40 +337,48 @@ class DAO {
 
             // Insertion des statistiques
             $query = "
-                INSERT INTO `dex_pokemon_evolutions` (pokedexId, evolution_pokedexId, evolution_name) 
+                INSERT INTO `dex_pokemon_evolutions` (id_pokedex, evolution_id_pokedex, evolution_name) 
                 VALUES (?, ?, ?)
             ";
 
             $stmt = $pdo->prepare($query);
             $stmt->execute([
                 $pokemonId,
-                $pokemonData['evolution_pokedexId'],
+                $pokemonData['evolution_id_pokedex'],
                 $pokemonData['evolution_name']
             ]);
 
             // Insertion des statistiques
             $query = "
-                INSERT INTO `dex_pokemon_pre_evolutions` (pokedexId, pre_evolution_pokedexId, pre_evolution_name) 
+                INSERT INTO `dex_pokemon_pre_evolutions` (id_pokedex, pre_evolution_id_pokedex, pre_evolution_name) 
                 VALUES (?, ?, ?)
             ";
 
             $stmt = $pdo->prepare($query);
             $stmt->execute([
                 $pokemonId,
-                $pokemonData['pre_evolution_pokedexId'],
+                $pokemonData['pre_evolution_id_pokedex'],
                 $pokemonData['pre_evolution_name']
             ]);
 
             // Insertion des types
             $query = "
-                INSERT INTO `dex_pokemon_types` (pokedexId, typeId) 
-                VALUES (?, ?)
+                INSERT INTO `dex_pokemon_types` (id_pokedex, id_types_1, id_types_2) 
+                VALUES (?, ?, ?)
             ";
 
-            $stmt = $pdo->prepare($query);
-            foreach ($pokemonData['apiTypes'] as $type) {
-                $typeId = $this->getTypeByName($type['name'], $type['image']);
-                $stmt->execute([$pokemonId, $typeId]);
+            if($pokemonData['id_types_name_1'] !== null) {
+                $typeId = $this->getTypeByName($pokemonData['id_types_name_1']);
+                var_dump($typeId['id']);
+
+                if($pokemonData['id_types_name_2'] !== null) {
+                    $typeId2 = $this->getTypeByName($pokemonData['id_types_name_2']);
+                } else {
+                    $typeId2 = null;
+                }
+
+                $stmt = $pdo->prepare($query);
+                $stmt->execute([$pokemonId, $typeId['id'], ($typeId2['id'])]);
             }
 
             $pdo->commit();

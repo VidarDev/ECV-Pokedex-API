@@ -15,34 +15,49 @@ class APIPokemon {
 
         // Extraire les données requises
         $extractedData = [
-            'pokedexId' => isset($data['pokedexId']) ? $data['pokedexId'] : null,
+            'id_pokedex' => isset($data['pokedexId']) ? $data['pokedexId'] : null,
             'name' => isset($data['name']) ? $data['name'] : null,
             'image' => isset($data['image']) ? $data['image'] : null,
             'stats' => isset($data['stats']) ? $data['stats'] : null,
-            'apiTypes' => array_map(function ($type) {
-                return ['name' => $type['name'], 'image' => $type['image']];
-            }, isset($data['apiTypes']) ? $data['apiTypes'] : []),
-            'apiGeneration' => isset($data['apiGeneration']) ? $data['apiGeneration'] : null,
+            'generation' => isset($data['apiGeneration']) ? $data['apiGeneration'] : null,
         ];
+
+        $typeCount = count($data['apiTypes'] ?? []);
+        if ($typeCount > 0) {
+            $extractedData['id_types_name_1'] = $data['apiTypes'][0]['name'];
+            $extractedData['id_types_image_1'] = $data['apiTypes'][0]['image'];
+            if ($typeCount > 1) {
+                $extractedData['id_types_name_2'] = $data['apiTypes'][1]['name'];
+                $extractedData['id_types_image_2'] = $data['apiTypes'][1]['image'];
+            } else {
+                $extractedData['id_types_name_2'] = null;
+                $extractedData['id_types_image_2'] = null;
+            }
+        } else {
+            $extractedData['id_types_name_1'] = null;
+            $extractedData['id_types_image_1'] = null;
+            $extractedData['id_types_name_2'] = null;
+            $extractedData['id_types_image_2'] = null;
+        }
 
         // Aplatir les évolutions (notez que cela ne fonctionnera que pour une seule évolution)
         if (!empty($data['apiEvolutions'])) {
             $firstEvolution = $data['apiEvolutions'][0];
             $extractedData['evolution_name'] = $firstEvolution['name'];
-            $extractedData['evolution_pokedexId'] = $firstEvolution['pokedexId'];
+            $extractedData['evolution_id_pokedex'] = $firstEvolution['pokedexId'];
         } else {
             $extractedData['evolution_name'] = null;
-            $extractedData['evolution_pokedexId'] = null;
+            $extractedData['evolution_id_pokedex'] = null;
         }
 
         // Aplatir les évolutions (notez que cela ne fonctionnera que pour une seule évolution)
         if (!empty($data['apiPreEvolutions'])) {
             $firstEvolution = $data['apiPreEvolutions'][0];
             $extractedData['pre_evolution_name'] = $firstEvolution['name'];
-            $extractedData['pre_evolution_pokedexId'] = $firstEvolution['pokedexId'];
+            $extractedData['pre_evolution_id_pokedex'] = $firstEvolution['pokedexId'];
         } else {
             $extractedData['pre_evolution_name'] = null;
-            $extractedData['pre_evolution_pokedexId'] = null;
+            $extractedData['pre_evolution_id_pokedex'] = null;
         }
 
         return $extractedData;

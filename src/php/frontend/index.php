@@ -5,8 +5,6 @@ include __DIR__ . '/layout/nav.php';
 
 $dao = new DAO();
 
-$dao->getPokemon(888);
-
 if (isset($_POST['pokemonInput'])) {
     $input = $_POST['pokemonInput'];
 
