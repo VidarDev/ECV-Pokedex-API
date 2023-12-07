@@ -1,6 +1,46 @@
 /* stylelint-disable */
 
 :root {
+  --fire: #ff7402;
+  --grass: #33a165;
+  --steel: #00858a;
+  --water: #0050ac;
+  --psychic: #c90086;
+  --ground: #c90086;
+  --ice: #70deff;
+  --flying: #5d4e75;
+  --ghost: #4d5b64;
+  --normal: #753845;
+  --poison: #7e0058;
+  --rock: #6e1a00;
+  --fighting: #634136;
+  --dark: #272625;
+  --bug: #6e1a00;
+  --dragon: #00c431;
+  --electric: #bba909;
+  --fairy: #d31c81;
+  --unknow: #757575;
+  --shadow: #29292c;
+
+  --10: #ff7402;
+  --12: #33a165;
+  --9: #00858a;
+  --11: #0050ac;
+  --14: #c90086;
+  --5: #c90086;
+  --15: #70deff;
+  --3: #5d4e75;
+  --6: #4d5b64;
+  --1: #753845;
+  --4: #7e0058;
+  --2: #634136;
+  --17: #272625;
+  --7: #6e1a00;
+  --16: #00c431;
+  --13: #bba909;
+  --18: #d31c81;
+  --0: #757575;
+  --8: #29292c;
 
   // Familles de Fonts
   --global-font-family-native: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
@@ -12,6 +52,7 @@
   --global-font-weight-bold: 700;
 
   // Couleurs principales
+  --global-brand-uno: #C14040;
 
 
   // Neutral colors: nuances de gris

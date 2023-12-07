@@ -15,9 +15,8 @@ if (isset($_POST['pokemonInput'])) {
 } elseif (isset($_POST['generationSelect'])) {
     $selectedGeneration = $_POST['generationSelect'];
     $pokemonList = $dao->getPokemonByGeneration($selectedGeneration);
-//    $pokemonList = $dao->getPokemonList();
 
-    echo '<div class="pokemon-list">';
+    echo '<div class="pokemon-list__wrapper">';
     foreach ($pokemonList as $pokemon) {
         // Utilisez la fonction formatPokemons pour formater la carte du Pokémon
         echo $dao->UIPokemonCard($pokemon);

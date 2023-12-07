@@ -1,4 +1,4 @@
-$component-name: btn;
+$component-name: select;
 
 .#{$component-name} {
   display: inline;
@@ -21,9 +21,9 @@ $component-name: btn;
   &:focus-visible {
     outline-color: var(--global-neutral-transparent);
   }
-}
 
-.#{$component-name}[type="submit"] {
-  padding: 8px 20px;
-  background: var(--global-brand-uno);
+  option {
+    background: rgba(255, 255, 255, 0.22);
+    color: var(--global-neutral-black);
+  }
 }

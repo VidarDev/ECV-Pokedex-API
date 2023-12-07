@@ -1,0 +1,60 @@
+body {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.63) 0%, rgba(0, 0, 0, 0.63) 100%), var(--grass);
+  min-height: 100vh;
+  padding-inline: 10vw;
+
+  &:has(.Normal) {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.63) 0%, rgba(0, 0, 0, 0.63) 100%), var(--1);
+  }
+  &:has(.Combat) {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.63) 0%, rgba(0, 0, 0, 0.63) 100%), var(--2);
+  }
+  &:has(.Vol) {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.63) 0%, rgba(0, 0, 0, 0.63) 100%), var(--3);
+  }
+  &:has(.Poison) {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.63) 0%, rgba(0, 0, 0, 0.63) 100%), var(--4);
+  }
+  &:has(.Sol) {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.63) 0%, rgba(0, 0, 0, 0.63) 100%), var(--5);
+  }
+  &:has(.Roche) {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.63) 0%, rgba(0, 0, 0, 0.63) 100%), var(--6);
+  }
+  &:has(.Insecte) {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.63) 0%, rgba(0, 0, 0, 0.63) 100%), var(--7);
+  }
+  &:has(.Spectre) {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.63) 0%, rgba(0, 0, 0, 0.63) 100%), var(--8);
+  }
+  &:has(.Acier) {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.63) 0%, rgba(0, 0, 0, 0.63) 100%), var(--9);
+  }
+  &:has(.Feu) {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.63) 0%, rgba(0, 0, 0, 0.63) 100%), var(--10);
+  }
+  &:has(.Eau) {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.63) 0%, rgba(0, 0, 0, 0.63) 100%), var(--11);
+  }
+  &:has(.Plante) {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.63) 0%, rgba(0, 0, 0, 0.63) 100%), var(--12);
+  }
+  &:has(.Électrik) {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.63) 0%, rgba(0, 0, 0, 0.63) 100%), var(--13);
+  }
+  &:has(.Psy) {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.63) 0%, rgba(0, 0, 0, 0.63) 100%), var(--14);
+  }
+  &:has(.Glace) {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.63) 0%, rgba(0, 0, 0, 0.63) 100%), var(--15);
+  }
+  &:has(.Dragon) {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.63) 0%, rgba(0, 0, 0, 0.63) 100%), var(--16);
+  }
+  &:has(.Ténèbres) {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.63) 0%, rgba(0, 0, 0, 0.63) 100%), var(--17);
+  }
+  &:has(.Fée) {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.63) 0%, rgba(0, 0, 0, 0.63) 100%), var(--18);
+  }
+}

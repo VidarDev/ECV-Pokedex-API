@@ -1,5 +1,20 @@
 $component-name: nav;
 
 .#{$component-name} {
- background: radial-gradient(548.95% 200.06% at 145.33% 0,#202129 0,#202129 33.2%,#711923 100%);
+  display: flex;
+  width: 100%;
+  height: min-content ;
+  margin: 0;
+  padding: 20px 0;
+  justify-content: space-between;
+
+  form {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: min-content;
+    background-color: rgba(255, 255, 255, 0.22);
+    width: max(33.33%, 200px);
+    border-radius: 8px;
+  }
 }

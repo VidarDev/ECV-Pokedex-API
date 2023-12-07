@@ -421,17 +421,16 @@ class DAO {
 
     public function UIPokemonCard($pokemon) {
         return "
-            <div class='pokemon-card'>
-                <img src='{$pokemon['image']}' alt='{$pokemon['name']}' />
-                <h2>{$pokemon['name']}</h2>
-                <p>ID: {$pokemon['id_pokedex']}</p>
+            <div class='pokemon__card {$pokemon['type1_name']}'>
+                <img src='{$pokemon['image']}' role='igm' alt='{$pokemon['name']}' title='{$pokemon['name']}' aria-label='{$pokemon['name']}' loading='lazy' width='52' height='52'/>
+                <h2>#{$pokemon['id_pokedex']} {$pokemon['name']}</h2>
             </div>
         ";
     }
 
     public function UIPokemon($pokemon) {
         return "
-            <div class='pokemon-card'>
+            <div class='pokemon__card'>
                 <img src='{$pokemon['image']}' alt='{$pokemon['name']}' />
                 <h2>{$pokemon['name']}</h2>
                 <p>ID: {$pokemon['id_pokedex']}</p>
