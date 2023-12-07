@@ -10,7 +10,7 @@ if (isset($_POST['pokemonInput'])) {
 
     $pokemon = $dao->getPokemon($input);
 
-    echo $dao->UIPokemonCard($pokemon[0]);
+    echo $dao->UIPokemon($pokemon[0]);
 
 } elseif (isset($_POST['generationSelect'])) {
     $selectedGeneration = $_POST['generationSelect'];
