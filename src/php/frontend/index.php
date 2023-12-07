@@ -5,9 +5,19 @@ include __DIR__ . '/layout/nav.php';
 
 $dao = new DAO();
 
-//var_dump($dao->api->getPokemonByPokedexID(888));
-//var_dump($dao->getPokemon(888));
-var_dump($dao->getTypeByName("Eau"));
+$dao->getPokemon(888);
+
+if (isset($_POST['pokemonInput'])) {
+    $input = $_POST['pokemonInput'];
+
+    $pokemon = $dao->getPokemon($input);
+
+    var_dump($input);
+    var_dump($pokemon);
+
+    echo $dao->UIPokemonCard($pokemon);
+}
+
 ?>
 
 <?php

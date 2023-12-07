@@ -38,8 +38,8 @@ class DAO {
         return $imageData !== false ? $imagePath : null;
     }
 
-    public function downloadTypesImage($imageUrl, $name) {
-        $imagePath = "./img/Types/{$name}.png";
+    public function downloadTypeImage($imageUrl, $name) {
+        $imagePath = "./img/types/{$name}.png";
 
         // Utilisez file_get_contents et file_put_contents pour télécharger et sauvegarder l'image
         $imageData = file_get_contents($imageUrl);
@@ -52,8 +52,10 @@ class DAO {
 
 
     public function getPokemon($input) {
+        $filterInput = ucfirst(strtolower(str_replace(' ', '', $input)));
+
         // Déterminer si l'entrée est un ID ou un nom
-        $isId = is_numeric($input);
+        $isId = is_numeric($filterInput);
 
         // Essayer de récupérer le Pokémon de la base de données
         $pokemon = $isId ? $this->getPokemonByPokedexID($input) : $this->getPokemonByName($input);
@@ -68,6 +70,44 @@ class DAO {
         }
 
         return $pokemon;
+    }
+
+    public function getPokemonList() {
+        $pdo = $this->connexion();
+
+        $query = "
+            SELECT 
+                p.pokedexId,
+                p.name,
+                p.image,
+                p.apiGeneration,
+                ps.HP,
+                ps.attack,
+                ps.defense,
+                ps.special_attack,
+                ps.special_defense,
+                ps.speed,
+                pp.pre_evolution_pokedexId AS preEvolPokedexId,
+                pp.pre_evolution_name AS preEvolName,
+                pe.evolution_pokedexId AS evolPokedexId,
+                pe.evolution_name AS evolName,
+                GROUP_CONCAT(t.name SEPARATOR ',') AS typeNames,
+                GROUP_CONCAT(t.image SEPARATOR ',') AS typeImages
+            FROM 
+                `dex_pokemons` p
+                LEFT JOIN `dex_pokemon_stats` ps ON p.pokedexId = ps.pokedexId
+                LEFT JOIN `dex_pokemon_types` pt ON p.pokedexId = pt.pokedexId
+                LEFT JOIN `dex_pokemon_pre_evolutions` pp ON p.pokedexId = pp.pokedexId
+                LEFT JOIN `dex_pokemon_evolutions` pe ON p.pokedexId = pe.pokedexId
+                LEFT JOIN `dex_types` t ON pt.pokedexId = t.id
+            GROUP BY 
+                p.pokedexId;
+        ";
+
+        $stmt = $pdo->prepare($query);
+        $stmt->execute();
+
+        return $stmt->fetchAll();
     }
 
     public function getPokemonByPokedexID($pokedexID) {
@@ -89,8 +129,8 @@ class DAO {
                 pp.pre_evolution_name AS preEvolName,
                 pe.evolution_pokedexId AS evolPokedexId,
                 pe.evolution_name AS evolName,
-                t.name AS typeName,
-                t.image AS typeImage
+                GROUP_CONCAT(t.name SEPARATOR ',') AS typeNames,
+                GROUP_CONCAT(t.image SEPARATOR ',') AS typeImages
             FROM 
                 `dex_pokemons` p
                 LEFT JOIN `dex_pokemon_stats` ps ON p.pokedexId = ps.pokedexId
@@ -99,7 +139,9 @@ class DAO {
                 LEFT JOIN `dex_pokemon_evolutions` pe ON p.pokedexId = pe.pokedexId
                 LEFT JOIN `dex_types` t ON pt.pokedexId = t.id
             WHERE 
-                p.pokedexId = ?;
+                p.pokedexId = ?
+            GROUP BY 
+                p.pokedexId;
         ";
 
         $stmt = $pdo->prepare($query);
@@ -127,8 +169,8 @@ class DAO {
                 pp.pre_evolution_name AS preEvolName,
                 pe.evolution_pokedexId AS evolPokedexId,
                 pe.evolution_name AS evolName,
-                t.name AS typeName,
-                t.image AS typeImage
+                GROUP_CONCAT(t.name SEPARATOR ',') AS typeNames,
+                GROUP_CONCAT(t.image SEPARATOR ',') AS typeImages
             FROM 
                 `dex_pokemons` p
                 LEFT JOIN `dex_pokemon_stats` ps ON p.pokedexId = ps.pokedexId
@@ -137,7 +179,9 @@ class DAO {
                 LEFT JOIN `dex_pokemon_evolutions` pe ON p.pokedexId = pe.pokedexId
                 LEFT JOIN `dex_types` t ON pt.pokedexId = t.id
             WHERE 
-                p.name = ?;
+                p.name = ?
+            GROUP BY 
+                p.pokedexId;
         ";
 
         $stmt = $pdo->prepare($query);
@@ -165,8 +209,8 @@ class DAO {
                 pp.pre_evolution_name AS preEvolName,
                 pe.evolution_pokedexId AS evolPokedexId,
                 pe.evolution_name AS evolName,
-                t.name AS typeName,
-                t.image AS typeImage
+                GROUP_CONCAT(t.name SEPARATOR ',') AS typeNames,
+                GROUP_CONCAT(t.image SEPARATOR ',') AS typeImages
             FROM 
                 `dex_pokemons` p
                 LEFT JOIN `dex_pokemon_stats` ps ON p.pokedexId = ps.pokedexId
@@ -175,7 +219,9 @@ class DAO {
                 LEFT JOIN `dex_pokemon_evolutions` pe ON p.pokedexId = pe.pokedexId
                 LEFT JOIN `dex_types` t ON pt.pokedexId = t.id
             WHERE 
-                p.apiGeneration = ?;
+                p.apiGeneration = ?
+            GROUP BY 
+                p.pokedexId;
         ";
 
         $stmt = $pdo->prepare($query);
@@ -211,7 +257,7 @@ class DAO {
                 $image = $type['image'];
                 $name = $type['name'];
 
-                $imagePath = $this->downloadTypesImage($image, $name);
+                $imagePath = $this->downloadTypeImage($image, $name);
 
                 $query = "INSERT INTO `dex_types` (name, image) VALUES (?, ?)";
 
@@ -341,11 +387,37 @@ class DAO {
 //    }
 
     public function UIPokemonCard($pokemon) {
-
+        return "
+            <div class='pokemon-card'>
+                <img src='{$pokemon[0][2]}' alt='{$pokemon[0][1]}' />
+                <p>0: {$pokemon[0][0]}</p>
+                <p>1: {$pokemon[0][1]}</p>
+                <p>2: {$pokemon[0][2]}</p>
+                <p>3: {$pokemon[0][3]}</p>
+                <p>4: {$pokemon[0][4]}</p>
+                <p>5: {$pokemon[0][5]}</p>
+                <p>6: {$pokemon[0][6]}</p>
+                <p>7: {$pokemon[0][7]}</p>
+                <p>8: {$pokemon[0][8]}</p>
+                <p>9: {$pokemon[0][9]}</p>
+                <p>10: {$pokemon[0][10]}</p>
+                <p>11: {$pokemon[0][11]}</p>
+                <p>12: {$pokemon[0][12]}</p>
+                <p>13: {$pokemon[0][13]}</p>
+                <p>14: {$pokemon[0][14]}</p>
+                <p>15: {$pokemon[0][15]}</p>
+            </div>
+        ";
     }
 
     public function UIPokemon($pokemon) {
-
+        return "
+            <div class='pokemon-card'>
+                <img src='{$pokemon['image']}' alt='{$pokemon['name']}' />
+                <h2>{$pokemon['name']}</h2>
+                <p>ID: {$pokemon['pokedexId']}</p>
+            </div>
+        ";
     }
 }
 
