@@ -367,18 +367,22 @@ class DAO {
                 VALUES (?, ?, ?)
             ";
 
-            if($pokemonData['id_types_name_1'] !== null) {
+            if ($pokemonData['id_types_name_1'] !== null) {
                 $typeId = $this->getTypeByName($pokemonData['id_types_name_1']);
-                var_dump($typeId['id']);
 
-                if($pokemonData['id_types_name_2'] !== null) {
+                // Vérifier si $typeId est un tableau avant d'accéder à 'id'
+                $typeId = is_array($typeId) ? $typeId['id'] : null;
+
+                $typeId2 = null;
+                if ($pokemonData['id_types_name_2'] !== null) {
                     $typeId2 = $this->getTypeByName($pokemonData['id_types_name_2']);
-                } else {
-                    $typeId2 = null;
+                    // Vérifier si $typeId2 est un tableau avant d'accéder à 'id'
+                    $typeId2 = is_array($typeId2) ? $typeId2['id'] : null;
                 }
 
+                // Assurez-vous que votre requête SQL $query est correctement structurée pour gérer $typeId et $typeId2
                 $stmt = $pdo->prepare($query);
-                $stmt->execute([$pokemonId, $typeId['id'], ($typeId2['id'])]);
+                $stmt->execute([$pokemonId, $typeId, $typeId2]);
             }
 
             $pdo->commit();

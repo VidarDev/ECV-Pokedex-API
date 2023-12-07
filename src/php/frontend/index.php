@@ -10,9 +10,6 @@ if (isset($_POST['pokemonInput'])) {
 
     $pokemon = $dao->getPokemon($input);
 
-    var_dump($input);
-    var_dump($pokemon);
-
     echo $dao->UIPokemonCard($pokemon);
 }
 
