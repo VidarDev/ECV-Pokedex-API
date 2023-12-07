@@ -2,6 +2,8 @@
 public/img/pokemons/*
 public/img/types/*
 
+package-lock.json
+
 # Logs
 logs
 *.log

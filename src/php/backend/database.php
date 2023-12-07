@@ -422,23 +422,9 @@ class DAO {
     public function UIPokemonCard($pokemon) {
         return "
             <div class='pokemon-card'>
-                <img src='{$pokemon[0][2]}' alt='{$pokemon[0][1]}' />
-                <p>0: {$pokemon[0][0]}</p>
-                <p>1: {$pokemon[0][1]}</p>
-                <p>2: {$pokemon[0][2]}</p>
-                <p>3: {$pokemon[0][3]}</p>
-                <p>4: {$pokemon[0][4]}</p>
-                <p>5: {$pokemon[0][5]}</p>
-                <p>6: {$pokemon[0][6]}</p>
-                <p>7: {$pokemon[0][7]}</p>
-                <p>8: {$pokemon[0][8]}</p>
-                <p>9: {$pokemon[0][9]}</p>
-                <p>10: {$pokemon[0][10]}</p>
-                <p>11: {$pokemon[0][11]}</p>
-                <p>12: {$pokemon[0][12]}</p>
-                <p>13: {$pokemon[0][13]}</p>
-                <p>14: {$pokemon[0][14]}</p>
-                <p>15: {$pokemon[0][15]}</p>
+                <img src='{$pokemon['image']}' alt='{$pokemon['name']}' />
+                <h2>{$pokemon['name']}</h2>
+                <p>ID: {$pokemon['id_pokedex']}</p>
             </div>
         ";
     }
@@ -448,7 +434,7 @@ class DAO {
             <div class='pokemon-card'>
                 <img src='{$pokemon['image']}' alt='{$pokemon['name']}' />
                 <h2>{$pokemon['name']}</h2>
-                <p>ID: {$pokemon['pokedexId']}</p>
+                <p>ID: {$pokemon['id_pokedex']}</p>
             </div>
         ";
     }

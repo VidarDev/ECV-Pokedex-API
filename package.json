@@ -1,0 +1,23 @@
+{
+  "name": "pokedex",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "sass ./src/sass/style.scss:./public/css/style.css --style compressed"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VidarDev/pokemon.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/VidarDev/pokemon/issues"
+  },
+  "homepage": "https://github.com/VidarDev/pokemon#readme",
+  "dependencies": {
+    "sass": "^1.69.5"
+  }
+}

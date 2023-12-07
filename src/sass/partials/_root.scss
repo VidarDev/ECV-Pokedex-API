@@ -1,0 +1,27 @@
+/* stylelint-disable */
+
+:root {
+
+  // Familles de Fonts
+  --global-font-family-native: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+  --global-font-family-uno: Montserrat, var(--global-font-family-native);
+
+  // Fonts weights
+  --global-font-weight: 400;
+  --global-font-weight-thin: 300;
+  --global-font-weight-bold: 700;
+
+  // Couleurs principales
+
+
+  // Neutral colors: nuances de gris
+  --global-neutral-00: #fff;
+  --global-neutral-1000: #1F2029;
+
+  --global-neutral-transparent: rgba(255, 255, 255, 0);
+  --global-neutral-white: var(--global-neutral-00);
+  --global-neutral-black: var(--global-neutral-1000);
+  --global-neutral: var(--global-neutral-white);
+
+}
+/* stylelint-enable */

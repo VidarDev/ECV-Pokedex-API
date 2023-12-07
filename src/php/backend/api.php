@@ -51,9 +51,10 @@ class APIPokemon {
         }
 
         // Aplatir les évolutions (notez que cela ne fonctionnera que pour une seule évolution)
-        if (!empty($data['apiPreEvolution'])) {
-            $extractedData['pre_evolution_name'] = $data['apiPreEvolution']['name'];
-            $extractedData['pre_evolution_id_pokedex'] = $data['apiPreEvolution']['pokedexIdd'];
+        if (!empty($data['apiPreEvolution']) && is_array($data['apiPreEvolution'])) {
+            var_dump($data['apiPreEvolution']);
+            $extractedData['pre_evolution_name'] = $data['apiPreEvolution']['name'] ?? null;
+            $extractedData['pre_evolution_id_pokedex'] = $data['apiPreEvolution']['pokedexIdd'] ?? null;
         } else {
             $extractedData['pre_evolution_name'] = null;
             $extractedData['pre_evolution_id_pokedex'] = null;
