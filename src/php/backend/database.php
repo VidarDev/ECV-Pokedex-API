@@ -330,14 +330,17 @@ class DAO {
 
         return "
             <div class='pokemon-card {$pokemon['pokemonTypesFirstName_EN']}'>
-                <div class='pokemon-card'>
-                
+                <div class='pokemon-card-top'>
+                    <span class='pokemon-card-top__name'>{$pokemon['pokemonName']}</span>
+                    <span class='pokemon-card-top__pokedex'>#{$formatPokedexId}</span>
                 </div>
-                <div class='pokemon-card'>
-                
+                <div class='pokemon-card-bottom'>
+                    <div class='pokemon-card-bottom__types'>
+                        <img src='{$pokemon['pokemonTypesFirstImage']}' role='img' alt='{$pokemon['pokemonTypesFirstName']}' title='{$pokemon['pokemonTypesFirstName']}' aria-label='{$pokemon['pokemonTypesFirstName']}' loading='lazy' width='200' height='200'/>
+                        <img src='{$pokemon['pokemonTypesSecondImage']}' role='img' alt='{$pokemon['pokemonTypesSecondName']}' title='{$pokemon['pokemonTypesSecondName']}' aria-label='{$pokemon['pokemonTypesSecondName']}' loading='lazy' width='200' height='200'/>
+                    </div>
+                    <img class='pokemon-card-bottom__image' src='{$pokemon['pokemonImage']}' role='img' alt='{$pokemon['pokemonName']}' title='{$pokemon['pokemonName']}' aria-label='{$pokemon['pokemonName']}' loading='lazy' width='200' height='200'/>
                 </div>
-                <img src='{$pokemon['pokemonImage']}' role='img' alt='{$pokemon['pokemonName']}' title='{$pokemon['pokemonName']}' aria-label='{$pokemon['pokemonName']}' loading='lazy' width='52' height='52'/>
-                <h2>#{$formatPokedexId} {$pokemon['pokemonName']}</h2>
             </div>
         ";
     }

@@ -66,10 +66,12 @@ $component-name: nav;
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
+      gap: 1rem;
       width: 100%;
       height: 100%;
+      padding-right: 1rem;
 
-      --sb-track-color: var(--global-neutral-transparent-white);
+      --sb-track-color: var(--global-neutral-black);
       --sb-thumb-color: var(--global-neutral-white);
       --sb-size: 10px;
 
