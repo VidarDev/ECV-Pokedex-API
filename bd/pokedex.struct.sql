@@ -5,7 +5,7 @@ USE pokedex;
 -- Table dex_pokemons
 CREATE TABLE dex_pokemons (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    id_pokedex INT,
+    id_pokedex INT NOT NULL,
     name VARCHAR(255) NOT NULL,
     image VARCHAR(255),
     generation INT
@@ -14,8 +14,10 @@ CREATE TABLE dex_pokemons (
 -- Table dex_types
 CREATE TABLE dex_types (
     id INT AUTO_INCREMENT PRIMARY KEY,
+    id_type INT NOT NULL,
     name VARCHAR(255) NOT NULL,
-    image VARCHAR(255)
+    image VARCHAR(255),
+    english_name VARCHAR(255) NOT NULL
 );
 
 -- Table dex_pokemon_stats
@@ -32,12 +34,12 @@ CREATE TABLE dex_pokemon_stats (
 
 -- Table dex_pokemon_types
 CREATE TABLE dex_pokemon_types (
-    id_pokedex INT,
+    id_pokedex INT NOT NULL,
     id_types_1 INT,
     id_types_2 INT,
     FOREIGN KEY (id_pokedex) REFERENCES dex_pokemons(id_pokedex),
-    FOREIGN KEY (id_types_1) REFERENCES dex_types(id),
-    FOREIGN KEY (id_types_2) REFERENCES dex_types(id)
+    FOREIGN KEY (id_types_1) REFERENCES dex_types(id_type),
+    FOREIGN KEY (id_types_2) REFERENCES dex_types(id_type)
 );
 
 -- Table dex_pokemon_evolutions

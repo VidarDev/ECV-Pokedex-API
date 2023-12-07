@@ -40,30 +40,19 @@ class APIPokemon {
             'pokemonGeneration' => isset($data['apiGeneration']) ? $data['apiGeneration'] : null,
         ];
 
-        $typeCount = count($data['apiTypes'] ?? []);
-        if ($typeCount > 0) {
-            $firstType = $data['apiTypes'][0];
-            $secondType = $data['apiTypes'][1] ?? null;
+        $firstType = $data['apiTypes'][0];
+        $secondType = $data['apiTypes'][1] ?? null;
+        $extractedPokemonData['pokemonTypes']['firstName'] = isset($firstType['name']) ? $firstType['name'] : null;
+        $extractedPokemonData['pokemonTypes']['firstImage'] = isset($firstType['image']) ? $firstType['image'] : null;
+        $extractedPokemonData['pokemonTypes']['secondName'] = isset($secondType['name']) ? $secondType['name'] : null;
+        $extractedPokemonData['pokemonTypes']['secondImage'] = isset($secondType['image']) ? $secondType['image'] : null;
 
-            $extractedPokemonData['pokemonTypes']['fist_name'] = isset($firstType['name']) ? $firstType['name'] : null;
-            $extractedPokemonData['pokemonTypes']['fist_image'] = isset($firstType['image']) ? $firstType['image'] : null;
-            $extractedPokemonData['pokemonTypes']['second_name'] = isset($secondType['name']) ? $secondType['name'] : null;
-            $extractedPokemonData['pokemonTypes']['second_image'] = isset($secondType['image']) ? $secondType['image'] : null;
+        $firstEvolution = $data['apiEvolutions'][0] ?? null;
+        $extractedPokemonData['pokemonNextEvolId'] = isset($firstEvolution['pokedexId']) ? $firstEvolution['pokedexId'] : null;
+        $extractedPokemonData['pokemonNextEvolName'] = isset($firstEvolution['name']) ? $firstEvolution['name'] : null;
 
-        }
-
-        $nextEvolutionCount = count($data['apiEvolutions'] ?? []);
-        if ($nextEvolutionCount > 0) {
-            $firstEvolution = $data['apiEvolutions'][0];
-
-            $extractedPokemonData['pokemonNextEvolId'] = isset($firstEvolution['pokedexId']) ? $firstEvolution['pokedexId'] : null;
-            $extractedPokemonData['pokemonNextEvolName'] = isset($firstEvolution['name']) ? $firstEvolution['name'] : null;
-        }
-
-        if (!empty($data['apiPreEvolution']) && is_array($data['apiPreEvolution'])) {
-            $extractedPokemonData['pokemonPrevEvolId'] = $data['apiPreEvolution']['pokedexIdd'] ?? null;
-            $extractedPokemonData['pokemonPrevEvolName'] = $data['apiPreEvolution']['name'] ?? null;
-        }
+        $extractedPokemonData['pokemonPrevEvolId'] = isset($data['apiPreEvolution']['pokedexIdd']) ? $data['apiPreEvolution']['pokedexIdd'] : null;
+        $extractedPokemonData['pokemonPrevEvolName'] = isset($data['apiPreEvolution']['name']) ? $data['apiPreEvolution']['name'] : null;
 
         return $extractedPokemonData;
     }

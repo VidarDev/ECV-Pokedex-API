@@ -5,25 +5,26 @@ include __DIR__ . '/layout/nav.php';
 
 $dao = new DAO();
 
-if (isset($_POST['pokemonInput'])) {
-    $input = $_POST['pokemonInput'];
+//if (isset($_POST['pokemonInput'])) {
+//    $input = $_POST['pokemonInput'];
+//
+//    $pokemon = $dao->getPokemon($input);
+//
+//    echo $dao->UIPokemon($pokemon[0]);
+//
+//} elseif (isset($_POST['generationSelect'])) {
+//    $selectedGeneration = $_POST['generationSelect'];
+//    $pokemonList = $dao->getPokemonByGeneration($selectedGeneration);
+//
+//    echo '<div class="pokemon-list__wrapper">';
+//    foreach ($pokemonList as $pokemon) {
+//        // Utilisez la fonction formatPokemons pour formater la carte du Pokémon
+//        echo $dao->UIPokemonCard($pokemon);
+//    }
+//    echo '</div>';
+//}
 
-    $pokemon = $dao->getPokemon($input);
-
-    echo $dao->UIPokemon($pokemon[0]);
-
-} elseif (isset($_POST['generationSelect'])) {
-    $selectedGeneration = $_POST['generationSelect'];
-    $pokemonList = $dao->getPokemonByGeneration($selectedGeneration);
-
-    echo '<div class="pokemon-list__wrapper">';
-    foreach ($pokemonList as $pokemon) {
-        // Utilisez la fonction formatPokemons pour formater la carte du Pokémon
-        echo $dao->UIPokemonCard($pokemon);
-    }
-    echo '</div>';
-}
-
+var_dump($dao->getPokemonByIdOrName(777));
 ?>
 
 <?php
