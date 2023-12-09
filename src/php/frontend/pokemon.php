@@ -65,42 +65,42 @@ $formatPokedexId = formatPokedexId($pokemon['id']);
         <h2 class='pokemon-bottom__title'>Stats</h2>
         <div class='pokemon-bottom__wrapper'>
             <div class='stats-items'>
-                <h3 class='stats-items__label'>HP</h3>
+                <h3 class='stats-items__label'>PV</h3>
                 <div class='stats-items__progress'>
                     <span class='indicator' style='width: calc((<?= $pokemon['hp'] ?> * 100%) / 255);'></span>
                 </div>
                 <span class='stats-items__value'><?= $pokemon['hp'] ?></span>
             </div>
             <div class='stats-items'>
-                <h3 class='stats-items__label'>Attack</h3>
+                <h3 class='stats-items__label'>Attaque</h3>
                 <div class='stats-items__progress'>
                     <span class='indicator' style='width: calc((<?= $pokemon['attack'] ?> * 100%) / 255);'></span>
                 </div>
                 <span class='stats-items__value'><?= $pokemon['attack'] ?></span>
             </div>
             <div class='stats-items'>
-                <h3 class='stats-items__label'>Defense</h3>
+                <h3 class='stats-items__label'>Défense</h3>
                 <div class='stats-items__progress'>
                     <span class='indicator' style='width: calc((<?= $pokemon['defense'] ?> * 100%) / 255);'></span>
                 </div>
                 <span class='stats-items__value'><?= $pokemon['defense'] ?></span>
             </div>
             <div class='stats-items'>
-                <h3 class='stats-items__label'>Special Attack</h3>
+                <h3 class='stats-items__label'>Attaque Spéciale</h3>
                 <div class='stats-items__progress'>
                     <span class='indicator' style='width: calc((<?= $pokemon['special_attack'] ?> * 100%) / 255);'></span>
                 </div>
                 <span class='stats-items__value'><?= $pokemon['special_attack'] ?></span>
             </div>
             <div class='stats-items'>
-                <h3 class='stats-items__label'>Special Defense</h3>
+                <h3 class='stats-items__label'>Défense Spéciale</h3>
                 <div class='stats-items__progress'>
                     <span class='indicator' style='width: calc((<?= $pokemon['special_defense'] ?> * 100%) / 255);'></span>
                 </div>
                 <span class='stats-items__value'><?= $pokemon['special_defense'] ?></span>
             </div>
             <div class='stats-items'>
-                <h3 class='stats-items__label'>Speed</h3>
+                <h3 class='stats-items__label'>Vitesse</h3>
                 <div class='stats-items__progress'>
                     <span class='indicator' style='width: calc((<?= $pokemon['speed'] ?> * 100%) / 255);'></span>
                 </div>
