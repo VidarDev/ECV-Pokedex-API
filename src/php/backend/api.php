@@ -44,7 +44,7 @@ class APIPokemon {
         $secondType = $data['apiTypes'][1] ?? null;
 
         // Vérifiez d'abord si $secondType n'est pas null
-        if ($secondType !== null) {
+        if (isset($secondType)) {
             switch ($firstType['name']) {
                 case "Poison":
                     // Logique pour Poison et secondType non Sol

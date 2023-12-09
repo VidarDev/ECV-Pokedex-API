@@ -1,6 +1,7 @@
 $component-name: btn;
 
 .#{$component-name} {
+  position: relative;
   display: inline-flex;
   width: 100%;
   align-items: center;
@@ -10,10 +11,11 @@ $component-name: btn;
   border: none;
   color: var(--global-neutral);
   font-size: 1.5rem;
-  padding: 8px 16px;
+  padding: 0.5rem 1rem;
   border-radius: 8px;
 
   &::placeholder {
+    width: fit-content;
     font-family: var(--global-font-family-uno);
     color: var(--global-neutral);
     font-size: 1.5rem;
@@ -22,9 +24,24 @@ $component-name: btn;
   &:focus-visible {
     outline-color: var(--global-neutral-transparent);
   }
+
+  img, i {
+    height: 30px;
+    width: auto;
+    filter: brightness(0) invert(1);
+  }
 }
 
 .#{$component-name}[type="submit"] {
-  padding: 8px 20px;
-  background: var(--global-brand-uno);
+  padding: 0.5rem 0.25rem;
+  width: fit-content;
+}
+
+.#{$component-name}.search {
+  margin-right: 0.75rem;
+}
+
+.#{$component-name}.random {
+  padding: 0.5rem 0.25rem;
+  width: fit-content;
 }

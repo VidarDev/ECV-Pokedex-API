@@ -70,6 +70,7 @@ $component-name: pokemon;
           width: 100%;
           height: auto;
           max-height: 45dvh;
+          max-width: 45dvh;
           transform: translateY(10%);
           pointer-events: none;
         }
@@ -147,6 +148,10 @@ $component-name: pokemon;
   }
 
   @media (width < 992px) {
+    .#{$component-name}__pokedex-id {
+      font-size: clamp(7.5rem, 2.6228rem + 26.0116vw, 18.75rem);
+    }
+
     .pokemon-top {
       flex-direction: column-reverse;
       gap: 3rem;

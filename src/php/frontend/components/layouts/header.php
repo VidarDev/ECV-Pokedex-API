@@ -37,8 +37,13 @@
 <header id="header" class="header">
     <form action="index.php" method="post" class="pokemon">
         <label for="pokemonInput"></label>
-        <input type="text" class="btn" id="pokemonInput" name="pokemonInput" placeholder="ID ou Nom">
-        <input type="submit" class="btn" value="Chercher">
+        <input type="text" class="btn" id="pokemonInput" name="pokemonInput" placeholder="ID ou Nom" required>
+        <button type="button" class="btn random" id="random">
+            <img src='./img/icons/shuffle.svg' role='img' alt='Ramdom pokemon' title='Ramdom pokemon' aria-label='Ramdom pokemon' loading='lazy' width='16' height='16'/>
+        </button>
+        <button type="submit" class="btn search">
+            <img src='./img/icons/search.svg' role='img' alt='Ramdom pokemon' title='Ramdom pokemon' aria-label='Ramdom pokemon' loading='lazy' width='16' height='16'/>
+        </button>
     </form>
 </header>
 <main id="main">

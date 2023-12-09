@@ -13,4 +13,8 @@ document.addEventListener('DOMContentLoaded', () => {
     menuButton.addEventListener('click', () => {
         toogleMenu(navElement);
     });
+
+    document.getElementById('random').addEventListener('click', () => {
+        location.reload();
+    });
 });

@@ -24,11 +24,10 @@ $dao = new DAO();
         <div class="card-container">
             <?php
                 $selectedGeneration = 1;
-                $pokemonList = $dao->getPokemonByGeneration($selectedGeneration);
+                $pokemonList = $dao->getPokemonIdByGeneration($selectedGeneration);
 
                 foreach ($pokemonList as $pokemon) {
-                    // Utilisez la fonction formatPokemons pour formater la carte du Pokémon
-                    echo $dao->UIPokemonCard($pokemon);
+                    include __DIR__ . '/../card.php';
                 }
             ?>
         </div>
