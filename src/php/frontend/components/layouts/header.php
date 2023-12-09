@@ -3,6 +3,10 @@
     $dao = new Dao();
 
     $dao->checkTypesExists();
+
+    if ($dao->checkPokemonsExists() === false) {
+        $dao->addPokemonsAll(); // Ne pas activer sauf pour faire des tests
+    }
 ?>
 
 <!DOCTYPE html>
