@@ -42,17 +42,58 @@ class APIPokemon {
 
         $firstType = $data['apiTypes'][0];
         $secondType = $data['apiTypes'][1] ?? null;
-        $extractedPokemonData['pokemonTypes']['firstName'] = isset($firstType['name']) ? $firstType['name'] : null;
-        $extractedPokemonData['pokemonTypes']['firstImage'] = isset($firstType['image']) ? $firstType['image'] : null;
-        $extractedPokemonData['pokemonTypes']['secondName'] = isset($secondType['name']) ? $secondType['name'] : null;
-        $extractedPokemonData['pokemonTypes']['secondImage'] = isset($secondType['image']) ? $secondType['image'] : null;
+
+        // Vérifiez d'abord si $secondType n'est pas null
+        if ($secondType !== null) {
+            switch ($firstType['name']) {
+                case "Poison":
+                    // Logique pour Poison et secondType non Sol
+                    if ($secondType['name'] !== "Sol") {
+                        $extractedPokemonData['pokemonTypes']['firstName'] = isset($secondType['name']) ? $secondType['name'] : null;
+                        $extractedPokemonData['pokemonTypes']['firstImage'] = isset($secondType['image']) ? $secondType['image'] : null;
+                        $extractedPokemonData['pokemonTypes']['secondName'] = isset($firstType['name']) ? $firstType['name'] : null;
+                        $extractedPokemonData['pokemonTypes']['secondImage'] = isset($firstType['image']) ? $firstType['image'] : null;
+                    } else {
+                        $extractedPokemonData['pokemonTypes']['firstName'] = isset($firstType['name']) ? $firstType['name'] : null;
+                        $extractedPokemonData['pokemonTypes']['firstImage'] = isset($firstType['image']) ? $firstType['image'] : null;
+                        $extractedPokemonData['pokemonTypes']['secondName'] = isset($secondType['name']) ? $secondType['name'] : null;
+                        $extractedPokemonData['pokemonTypes']['secondImage'] = isset($secondType['image']) ? $secondType['image'] : null;
+                    }
+                    break;
+
+                case "Vol":
+                    // Logique pour Vol et secondType non Normal
+                    if ($secondType['name'] !== "Normal") {
+                        $extractedPokemonData['pokemonTypes']['firstName'] = isset($secondType['name']) ? $secondType['name'] : null;
+                        $extractedPokemonData['pokemonTypes']['firstImage'] = isset($secondType['image']) ? $secondType['image'] : null;
+                        $extractedPokemonData['pokemonTypes']['secondName'] = isset($firstType['name']) ? $firstType['name'] : null;
+                        $extractedPokemonData['pokemonTypes']['secondImage'] = isset($firstType['image']) ? $firstType['image'] : null;
+                    } else {
+                        $extractedPokemonData['pokemonTypes']['firstName'] = isset($firstType['name']) ? $firstType['name'] : null;
+                        $extractedPokemonData['pokemonTypes']['firstImage'] = isset($firstType['image']) ? $firstType['image'] : null;
+                        $extractedPokemonData['pokemonTypes']['secondName'] = isset($secondType['name']) ? $secondType['name'] : null;
+                        $extractedPokemonData['pokemonTypes']['secondImage'] = isset($secondType['image']) ? $secondType['image'] : null;
+                    }
+                    break;
+
+                default:
+                    $extractedPokemonData['pokemonTypes']['firstName'] = isset($firstType['name']) ? $firstType['name'] : null;
+                    $extractedPokemonData['pokemonTypes']['firstImage'] = isset($firstType['image']) ? $firstType['image'] : null;
+                    $extractedPokemonData['pokemonTypes']['secondName'] = isset($secondType['name']) ? $secondType['name'] : null;
+                    $extractedPokemonData['pokemonTypes']['secondImage'] = isset($secondType['image']) ? $secondType['image'] : null;
+                    break;
+            }
+        } else {
+            $extractedPokemonData['pokemonTypes']['firstName'] = isset($firstType['name']) ? $firstType['name'] : null;
+            $extractedPokemonData['pokemonTypes']['firstImage'] = isset($firstType['image']) ? $firstType['image'] : null;
+            $extractedPokemonData['pokemonTypes']['secondName'] = isset($secondType['name']) ? $secondType['name'] : null;
+            $extractedPokemonData['pokemonTypes']['secondImage'] = isset($secondType['image']) ? $secondType['image'] : null;
+        }
 
         $firstEvolution = $data['apiEvolutions'][0] ?? null;
         $extractedPokemonData['pokemonNextEvolId'] = isset($firstEvolution['pokedexId']) ? $firstEvolution['pokedexId'] : null;
-        $extractedPokemonData['pokemonNextEvolName'] = isset($firstEvolution['name']) ? $firstEvolution['name'] : null;
 
         $extractedPokemonData['pokemonPrevEvolId'] = isset($data['apiPreEvolution']['pokedexIdd']) ? $data['apiPreEvolution']['pokedexIdd'] : null;
-        $extractedPokemonData['pokemonPrevEvolName'] = isset($data['apiPreEvolution']['name']) ? $data['apiPreEvolution']['name'] : null;
 
         return $extractedPokemonData;
     }

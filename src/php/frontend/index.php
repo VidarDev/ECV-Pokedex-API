@@ -4,8 +4,6 @@ include __DIR__ . '/components/layouts/nav.php';
 
 $dao = new DAO();
 
-$dao->addPokemonsAll();
-
 if (isset($_POST['pokemonInput'])) {
     $input = $_POST['pokemonInput'];
 
