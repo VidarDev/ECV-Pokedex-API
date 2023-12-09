@@ -88,6 +88,36 @@ class DAO {
         return $result['id'];
     }
 
+    public function getGenerations() {
+        $pdo = $this->connexion();
+
+        $query = "SELECT DISTINCT generation FROM `dex_pokemons` ORDER BY generation ASC;";
+
+        $stmt = $pdo->prepare($query);
+        $stmt->execute();
+
+        return $stmt->fetchAll();
+    }
+
+    public function getEvolutionById($pokedexID) {
+        $pdo = $this->connexion();
+
+        $query = "
+            SELECT 
+                p.name,
+                p.image
+            FROM 
+                `dex_pokemons` p
+            WHERE 
+                p.id = ?;
+        ";
+
+        $stmt = $pdo->prepare($query);
+        $stmt->execute([$pokedexID]);
+
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
     public function getPokemonById($pokedexID) {
         $pdo = $this->connexion();
 
@@ -120,8 +150,6 @@ class DAO {
                 LEFT JOIN `dex_types` t2 ON pt.id_type_second = t2.id_type
             WHERE 
                 p.id = ?
-            GROUP BY 
-                p.id;
         ";
 
         $stmt = $pdo->prepare($query);
@@ -162,8 +190,6 @@ class DAO {
                 LEFT JOIN `dex_types` t2 ON pt.id_type_second = t2.id_type
             WHERE 
                 p.name = ?
-            GROUP BY 
-                p.id;
         ";
 
         $stmt = $pdo->prepare($query);
@@ -186,7 +212,7 @@ class DAO {
                 p.id
             ORDER BY
                 p.id
-            LIMIT 1000;
+            LIMIT 25;
         ";
 
         $stmt = $pdo->prepare($query);

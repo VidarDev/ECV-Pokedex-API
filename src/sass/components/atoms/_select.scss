@@ -3,22 +3,32 @@ $component-name: select;
 .#{$component-name} {
   position: relative;
   display: inline-flex;
-  width: 100%;
+  width: fit-content;
   align-items: center;
   font-family: var(--global-font-family-uno);
   outline: none;
   border: none;
   color: var(--global-neutral);
   font-size: 1.5rem;
-  padding: 0.5rem 1rem;
+  padding: .5rem 2.5rem 0.5rem 1rem;
   border-radius: 8px;
-  background: var(--global-neutral-transparent-white);
+  transition: background 0.2s ease-in-out;
+
+  background: var(--global-neutral-transparent-white) url('../img/icons/chevron-down.svg')
+  no-repeat;
+  background-position: calc(100% - 0.75rem) center !important;
+  appearance: none !important;
 
   &::placeholder {
     width: fit-content;
     font-family: var(--global-font-family-uno);
     color: var(--global-neutral);
     font-size: 1.5rem;
+  }
+
+  &:focus {
+    background: var(--global-neutral-transparent-white) url('../img/icons/chevron-up.svg')
+    no-repeat;
   }
 
   &:focus-visible {

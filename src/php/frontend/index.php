@@ -1,18 +1,12 @@
 <?php
-include __DIR__ . '/components/layouts/header.php';
-include __DIR__ . '/components/layouts/nav.php';
+include __DIR__ . '/../backend/database.php';
 
 $dao = new DAO();
 
 if (isset($_POST['pokemonInput'])) {
     $params = $_POST['pokemonInput'];
+    header("Location: pokemon.php?id=" . $params);
 } else {
-    $params = $dao->getRandomPokemonID();
+    header("Location: pokemon.php?id=random");
 }
-
-?>
-<?php include __DIR__ . '/pokemon.php'; ?>
-
-<?php
-include __DIR__ . '/components/layouts/footer.php';
 ?>

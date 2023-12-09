@@ -15,6 +15,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.getElementById('random').addEventListener('click', () => {
-        location.search = '&id=random';
+        location.search = 'id=random';
     });
 });

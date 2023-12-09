@@ -1,3 +1,6 @@
+<?php
+    $generations = $dao->getGenerations();
+?>
 <nav class="nav" id="nav">
 
     <div class="nav__button" id="nav-menu">
@@ -7,16 +10,11 @@
         <form action="index.php" method="post" class="generation">
             <label for="generationSelect"></label>
             <select id="generationSelect" class="select" name="generationSelect">
-                <option value="1">Gen 1</option>
-                <option value="2">Gen 2</option>
-                <option value="3">Gen 3</option>
-                <option value="4">Gen 4</option>
-                <option value="5">Gen 5</option>
-                <option value="6">Gen 6</option>
-                <option value="7">Gen 7</option>
-                <option value="8">Gen 8</option>
+                <option value="0" selected>All</option>
+                <?php foreach($generations as $generation): ?>
+                    <option value="<?= $generation[0]?>">Gen <?= $generation[0]?></option>
+                <?php endforeach; ?>
             </select>
-            <input type="submit" class="btn" value="Chercher">
         </form>
         <div class="card-container">
             <?php

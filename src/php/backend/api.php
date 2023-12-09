@@ -40,7 +40,7 @@ class APIPokemon {
             'pokemonGeneration' => isset($data['apiGeneration']) ? $data['apiGeneration'] : null,
         ];
 
-        $firstType = $data['apiTypes'][0];
+        $firstType = $data['apiTypes'][0] ?? null;
         $secondType = $data['apiTypes'][1] ?? null;
 
         // Vérifiez d'abord si $secondType n'est pas null
