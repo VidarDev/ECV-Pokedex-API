@@ -1,3 +1,10 @@
+<?php
+    include __DIR__ . '/../../../backend/database.php';
+    $dao = new Dao();
+
+    $dao->checkTypesExists();
+?>
+
 <!DOCTYPE html>
 <html lang="fr-FR">
 <head>

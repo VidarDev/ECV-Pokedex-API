@@ -1,9 +1,10 @@
 <?php
-include __DIR__ . '/../backend/database.php';
-include __DIR__ . '/layout/header.php';
-include __DIR__ . '/layout/nav.php';
+include __DIR__ . '/components/layouts/header.php';
+include __DIR__ . '/components/layouts/nav.php';
 
 $dao = new DAO();
+
+$dao->addPokemonsAll();
 
 if (isset($_POST['pokemonInput'])) {
     $input = $_POST['pokemonInput'];
@@ -26,5 +27,5 @@ if (isset($_POST['pokemonInput'])) {
 ?>
 
 <?php
-include __DIR__ . '/layout/footer.php';
+include __DIR__ . '/components/layouts/footer.php';
 ?>

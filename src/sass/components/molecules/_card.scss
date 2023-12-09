@@ -12,7 +12,7 @@ $component-name: pokemon-card;
   transition: var(--global-transition);
 
   &:hover {
-    background: var(--global-neutral-transparent-white);
+    background: var(--global-neutral-transparent-white) !important;
   }
 
   .pokemon-card-top {
