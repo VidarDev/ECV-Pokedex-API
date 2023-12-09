@@ -6,4 +6,10 @@ body {
     width: min(80dvw, 1400px);
     margin-inline: auto;
   }
+
+  @media (width < 992px) {
+    #main {
+      width: calc(100dvw - 8rem);
+    }
+  }
 }

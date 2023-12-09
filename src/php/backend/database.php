@@ -21,6 +21,7 @@ class DAO {
             $pdo = new PDO($dsn, $user, $pass);
             $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {
+            header('Location: /error.php'); // Redirection vers une page d'erreur
             die("Database connection error: " . $e->getMessage());
         }
 

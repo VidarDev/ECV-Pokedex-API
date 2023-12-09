@@ -4,7 +4,7 @@ $component-name: header;
   display: flex;
   width: 100%;
   height: fit-content;
-  padding: 20px 0;
+  padding: 1.25rem 0;
   justify-content: center;
 
   form {
@@ -14,7 +14,20 @@ $component-name: header;
     gap: .5rem;
     height: fit-content;
     background: var(--global-neutral-transparent-white);
-    width: max(25dvw, 200px);
+    width: min(60dvw,500px);
     border-radius: 8px;
+  }
+}
+
+@media (width < 992px) {
+  .#{$component-name} {
+    padding: 2.5rem 0 1.25rem 0;
+  }
+}
+@media (width < 576px) {
+  .#{$component-name} {
+    form {
+      width: calc(100dvw - 8rem);
+    }
   }
 }

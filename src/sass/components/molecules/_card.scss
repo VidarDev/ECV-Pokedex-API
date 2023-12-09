@@ -55,6 +55,14 @@ $component-name: pokemon-card;
     }
   }
 
+  @media (width < 768px) {
+    flex: 0 1 calc(50% - (16px) / 2);
+  }
+
+  @media (width < 576px) {
+    flex: 0 1 100%;
+  }
+
   &.fire {
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.63) 0%, rgba(255, 255, 255, 0.63) 100%), var(--fire);
   }
