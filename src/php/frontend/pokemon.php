@@ -27,13 +27,13 @@ if($pokemon === false) {
 }
 if (isset($pokemon['id_next_evolution'])) {
     $next_evolution = $dao->getEvolutionById($pokemon['id_next_evolution']);
-    $pokemon['name_next_evolution'] = $next_evolution['name'];
-    $pokemon['image_next_evolution'] = $next_evolution['image'];
+    $pokemon['name_next_evolution'] = $next_evolution['name'] ?? "Découvrir ?";
+    $pokemon['image_next_evolution'] = $next_evolution['image'] ?? "./img/unknown.png";
 }
 if (isset($pokemon['id_prev_evolution'])) {
     $prev_evolution = $dao->getEvolutionById($pokemon['id_prev_evolution']);
-    $pokemon['name_prev_evolution'] = $prev_evolution['name'];
-    $pokemon['image_prev_evolution'] = $prev_evolution['image'];
+    $pokemon['name_prev_evolution'] = $prev_evolution['name'] ?? "Découvrir ?";
+    $pokemon['image_prev_evolution'] = $prev_evolution['image'] ?? "./img/unknown.png";
 }
 
 $formatPokedexId = formatPokedexId($pokemon['id']);

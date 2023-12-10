@@ -88,7 +88,7 @@ class DAO {
         return $result['id'];
     }
 
-    public function getGenerations() {
+    public function getGenerationsAll() {
         $pdo = $this->connexion();
 
         $query = "SELECT DISTINCT generation FROM `dex_pokemons` ORDER BY generation ASC;";
@@ -98,6 +98,18 @@ class DAO {
 
         return $stmt->fetchAll();
     }
+
+    public function getTypesAll() {
+        $pdo = $this->connexion();
+
+        $query = "SELECT DISTINCT id_type, name_FR, image FROM `dex_types` ORDER BY id_type ASC;";
+
+        $stmt = $pdo->prepare($query);
+        $stmt->execute();
+
+        return $stmt->fetchAll();
+    }
+
 
     public function getEvolutionById($pokedexID) {
         $pdo = $this->connexion();
@@ -198,28 +210,134 @@ class DAO {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function getPokemonIdByGeneration($generation) {
+    public function getPokemonsList($generation, $type, $page) {
         $pdo = $this->connexion();
+
+        $limit = 25;
+        $offset = ($page - 1) * 25;
 
         $query = "
             SELECT 
-                p.id
+                p.id 
             FROM 
-                `dex_pokemons` p
+                `dex_pokemons` p 
+                LEFT JOIN `dex_pokemons_types` pt ON p.id = pt.id_pokemon
             WHERE 
-                p.generation = ?
+                p.generation = :generation AND
+                (pt.id_type_first = :type OR pt.id_type_second = :type)
             GROUP BY 
-                p.id
-            ORDER BY
-                p.id
-            LIMIT 25;
+                p.id 
+            ORDER BY 
+                p.id 
+            LIMIT :limit 
+            OFFSET :offset ;
         ";
 
         $stmt = $pdo->prepare($query);
-        $stmt->execute([$generation]);
+
+        $stmt->bindParam(':generation', $generation, PDO::PARAM_INT);
+        $stmt->bindParam(':type', $type, PDO::PARAM_INT);
+        $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+
+        $stmt->execute();
 
         return $stmt->fetchAll();
     }
+
+    public function getPokemonsListAllGeneration($type, $page) {
+        $pdo = $this->connexion();
+
+        $limit = 25;
+        $offset = ($page - 1) * 25;
+
+        $query = "
+            SELECT 
+                p.id 
+            FROM 
+                `dex_pokemons` p 
+                LEFT JOIN `dex_pokemons_types` pt ON p.id = pt.id_pokemon
+            WHERE 
+                pt.id_type_first = :type OR pt.id_type_second = :type
+            GROUP BY 
+                p.id 
+            ORDER BY 
+                p.id 
+            LIMIT :limit 
+            OFFSET :offset ;
+        ";
+
+        $stmt = $pdo->prepare($query);
+
+        $stmt->bindParam(':type', $type, PDO::PARAM_INT);
+        $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+
+        $stmt->execute();
+
+        return $stmt->fetchAll();
+    }
+
+    public function getPokemonsListAllTypes($generation, $page) {
+        $pdo = $this->connexion();
+
+        $limit = 25;
+        $offset = ($page - 1) * 25;
+
+        $query = "
+            SELECT 
+                p.id 
+            FROM 
+                `dex_pokemons` p
+            WHERE 
+                p.generation = :generation
+            GROUP BY 
+                p.id 
+            ORDER BY 
+                p.id 
+            LIMIT :limit 
+            OFFSET :offset ;
+        ";
+
+        $stmt = $pdo->prepare($query);
+
+        $stmt->bindParam(':generation', $generation, PDO::PARAM_INT);
+        $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+
+        $stmt->execute();
+
+        return $stmt->fetchAll();
+    }
+    public function getPokemonsListAllTypesAndGeneration($page) {
+        $pdo = $this->connexion();
+
+        $limit = 25;
+        $offset = ($page - 1) * 25;
+
+        $query = "
+            SELECT 
+                p.id 
+            FROM 
+                `dex_pokemons` p
+            GROUP BY 
+                p.id 
+            ORDER BY 
+                p.id 
+            LIMIT :limit 
+            OFFSET :offset ;
+        ";
+
+        $stmt = $pdo->prepare($query);
+
+        $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+
+        $stmt->execute();
+
+        return $stmt->fetchAll();
+    }
+
 
     public function getPokemonCard($pokedexID) {
         $pdo = $this->connexion();
@@ -370,24 +488,44 @@ class DAO {
         }
     }
 
-    public function UIPokemonCard($pokemon) {
-        $formatPokedexId = formatPokedexId($pokemon['id']);
+    public function UIPokemonCard($pokemonCard) {
+        $formatPokedexId = formatPokedexId($pokemonCard['id']);
 
-        return "
-            <div class='pokemon-card {$pokemon['pokemon_type_first_name_EN']}'>
-                <div class='pokemon-card-top'>
-                    <span class='pokemon-card-top__name'>{$pokemon['name']}</span>
-                    <span class='pokemon-card-top__pokedex'>#{$formatPokedexId}</span>
-                </div>
-                <div class='pokemon-card-bottom'>
-                    <div class='pokemon-card-bottom__types'>
-                        <img src='{$pokemon['pokemon_type_first_image']}' role='img' alt='{$pokemon['pokemon_type_first_name_FR']}' title='{$pokemon['pokemon_type_first_name_FR']}' aria-label='{$pokemon['pokemon_type_first_name_FR']}' loading='lazy' width='200' height='200'/>
-                        <img src='{$pokemon['pokemon_type_second_image']}' role='img' alt='{$pokemon['pokemon_type_second_name_FR']}' title='{$pokemon['pokemon_type_second_name_FR']}' aria-label='{$pokemon['pokemon_type_second_name_FR']}' loading='lazy' width='200' height='200'/>
+        if(isset($pokemonCard['id_type_second'])){
+            $code = "
+                <a class='pokemon-card {$pokemonCard['pokemon_type_first_name_EN']} ' href='?id={$pokemonCard['id']} '>
+                    <div class='pokemon-card-top'>
+                        <span class='pokemon-card-top__name'>{$pokemonCard['name']} </span>
+                        <span class='pokemon-card-top__pokedex'>#{$formatPokedexId} </span>
                     </div>
-                    <img class='pokemon-card-bottom__image' src='{$pokemon['image']}' role='img' alt='{$pokemon['name']}' title='{$pokemon['name']}' aria-label='{$pokemon['name']}' loading='lazy' width='200' height='200'/>
-                </div>
-            </div>
-        ";
+                    <div class='pokemon-card-bottom'>
+                        <div class='pokemon-card-bottom__types'>
+                            <img src='{$pokemonCard['pokemon_type_first_image']} ' role='img' alt='{$pokemonCard['pokemon_type_first_name_FR']} ' title='{$pokemonCard['pokemon_type_first_name_FR']} ' aria-label='{$pokemonCard['pokemon_type_first_name_FR']} ' loading='lazy' width='200' height='200'/>
+                            <img src='{$pokemonCard['pokemon_type_second_image']} ' role='img' alt='{$pokemonCard['pokemon_type_second_name_FR']} ' title='{$pokemonCard['pokemon_type_second_name_FR']} ' aria-label='{$pokemonCard['pokemon_type_second_name_FR']} ' loading='lazy' width='200' height='200'/>
+                        </div>
+                        <img class='pokemon-card-bottom__image' src='{$pokemonCard['image']} ' role='img' alt='{$pokemonCard['name']} ' title='{$pokemonCard['name']} ' aria-label='{$pokemonCard['name']} ' loading='lazy' width='200' height='200'/>
+                    </div>
+                </a>
+            ";
+        }
+        else {
+            $code = "
+                <a class='pokemon-card {$pokemonCard['pokemon_type_first_name_EN']} ' href='?id={$pokemonCard['id']} '>
+                    <div class='pokemon-card-top'>
+                        <span class='pokemon-card-top__name'>{$pokemonCard['name']} </span>
+                        <span class='pokemon-card-top__pokedex'>#{$formatPokedexId} </span>
+                    </div>
+                    <div class='pokemon-card-bottom'>
+                        <div class='pokemon-card-bottom__types'>
+                            <img src='{$pokemonCard['pokemon_type_first_image']} ' role='img' alt='{$pokemonCard['pokemon_type_first_name_FR']} ' title='{$pokemonCard['pokemon_type_first_name_FR']} ' aria-label='{$pokemonCard['pokemon_type_first_name_FR']} ' loading='lazy' width='200' height='200'/>
+                        </div>
+                        <img class='pokemon-card-bottom__image' src='{$pokemonCard['image']} ' role='img' alt='{$pokemonCard['name']} ' title='{$pokemonCard['name']} ' aria-label='{$pokemonCard['name']} ' loading='lazy' width='200' height='200'/>
+                    </div>
+                </a>
+            ";
+        }
+
+        return $code;
     }
 }
 

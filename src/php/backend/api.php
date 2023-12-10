@@ -113,18 +113,43 @@ class APIPokemon {
     public function getPokemonById($pokedexID) {
         $apiUrl = $this->connexion();
 
-        // GET request
-        $reponse = file_get_contents("{$apiUrl}/pokemon/{$pokedexID}");
+        // Créer un contexte de flux HTTP
+        $context = stream_context_create([
+            "http" => [
+                "method" => "GET",
+                "header" => "Accept-language: en\r\n" .
+                    "Cookie: foo=bar\r\n"
+            ]
+        ]);
 
-        $extractedData = $this->formatPokemonData($this->JSON($reponse));
-        return $extractedData;
+        // GET request
+        $reponse = @file_get_contents("{$apiUrl}/pokemon/{$pokedexID}", false, $context);
+
+        if ($reponse === false) {
+            return null;
+        }
+        else {
+            $extractedData = $this->formatPokemonData($this->JSON($reponse));
+            return $extractedData;
+        }
     }
 
     public function getPokemonByName($name) {
         $apiUrl = $this->connexion();
 
+        // Créer un contexte de flux HTTP
+        $context = stream_context_create([
+            "http" => [
+                "method" => "GET",
+                "header" => "Accept-language: en\r\n" .
+                    "Cookie: foo=bar\r\n"
+            ]
+        ]);
+
         // GET request
-        $reponse = file_get_contents("{$apiUrl}/pokemon/{$name}");
+        $reponse = @file_get_contents("{$apiUrl}/pokemon/{$name}", false, $context);
+
+        if ($reponse === false) return null;
 
         $extractedData = $this->formatPokemonData($this->JSON($reponse));
         return $extractedData;
