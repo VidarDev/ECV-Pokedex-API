@@ -99,6 +99,8 @@ $component-name: pokemon;
             font-size: clamp(1rem, -0.1071rem + 1.7857vw, 1.5rem);
             font-variation-settings: "wght" 550;
             line-height: 1;
+            text-align: center;
+            white-space: nowrap;
           }
         }
       }

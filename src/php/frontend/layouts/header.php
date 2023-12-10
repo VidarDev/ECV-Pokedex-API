@@ -1,11 +1,11 @@
 <?php
-    include __DIR__ . '/../../../backend/database.php';
+    include __DIR__ . '/../../backend/database.php';
     $dao = new Dao();
 
-    $dao->checkTypesExists();
+    $dao->checkIfTypesExists();
 
-    if ($dao->checkPokemonsExists() === false) {
-        $dao->addPokemonsAll(); // Ne pas activer sauf pour faire des tests
+    if ($dao->checkIfPokemonsExists() === false) {
+        $dao->addPokemonsInit(24);
     }
 ?>
 
@@ -13,10 +13,10 @@
 <html lang="fr-FR">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <title>Pokédex with API | VidarDev</title>
-    <meta name="description" content="Recherchez un Pokémon par son nom ou son numéro de Pokédex national" />
+    <title>Pokédex API | VidarDev</title>
+    <meta name="description" content="Recherchez un Pokémon par son nom ou son numéro de Pokédex national." />
     <meta name="robots" content="index, follow" />
     <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
     <meta name="bingbot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
@@ -35,14 +35,14 @@
 </head>
 <body>
 <header id="header" class="header">
-    <form action="index.php" method="post" class="pokemon">
-        <label for="pokemonInput"></label>
+    <form action="index.php" method="post" class="search-pokemon">
+        <label for="pokemonInput" class="screen-reader-only"></label>
         <input type="text" class="btn" id="pokemonInput" name="pokemonInput" placeholder="ID ou Nom" required>
         <button type="button" class="btn random" id="random">
-            <img src='./img/icons/shuffle.svg' role='img' alt='Ramdom pokemon' title='Ramdom pokemon' aria-label='Ramdom pokemon' loading='lazy' width='16' height='16'/>
+            <img src='./img/icons/shuffle.svg' role='img' alt='Chercher un Pokémon aléatoire' title='Chercher un Pokémon aléatoire' aria-label='Chercher un Pokémon aléatoire' loading='lazy' width='16' height='16'/>
         </button>
         <button type="submit" class="btn search">
-            <img src='./img/icons/search.svg' role='img' alt='Ramdom pokemon' title='Ramdom pokemon' aria-label='Ramdom pokemon' loading='lazy' width='16' height='16'/>
+            <img src='./img/icons/search.svg' role='img' alt='Chercher le Pokémon saisis' title='Chercher le Pokémon saisis' aria-label='Chercher le Pokémon saisis' loading='lazy' width='16' height='16'/>
         </button>
     </form>
 </header>

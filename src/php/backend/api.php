@@ -4,34 +4,32 @@ class APIPokemon {
     public function __construct() {
     }
 
-    public function connexion() {
-        // Recupère l'URL de API dans le .env
-        $apiUrl = $_ENV['API_URL'];
-
-        return $apiUrl;
+    public function connexion()
+    {
+        $API_URL = $_ENV['API_URL']; // Get API_URL in .env
+        return $API_URL;
     }
 
-    public function JSON($jsonResponse) {
+    public function JSON($jsonResponse)
+    {
         // Décoder la réponse JSON en tableau PHP
         $data = json_decode($jsonResponse, true);
-
         return $data;
     }
 
-    public function formatTypeData($data) {
-
+    public function formatTypeData($data)
+    {
         $extractedPokemonData = [
             'typeId' => isset($data['id']) ? $data['id'] : null,
             'typeName' => isset($data['name']) ? $data['name'] : null,
             'typeImage' => isset($data['image']) ? $data['image'] : null,
             'typeEnglishName' => isset($data['englishName']) ? $data['englishName'] : null,
         ];
-
         return $extractedPokemonData;
     }
 
-    public function formatPokemonData($data) {
-
+    public function formatPokemonData($data)
+    {
         $extractedPokemonData = [
             'pokemonId' => isset($data['pokedexId']) ? $data['pokedexId'] : null,
             'pokemonName' => isset($data['name']) ? $data['name'] : null,
@@ -43,11 +41,14 @@ class APIPokemon {
         $firstType = $data['apiTypes'][0] ?? null;
         $secondType = $data['apiTypes'][1] ?? null;
 
-        // Vérifiez d'abord si $secondType n'est pas null
-        if (isset($secondType)) {
-            switch ($firstType['name']) {
+
+        // First check if $secondType is not null
+        if (isset($secondType))
+        {
+            switch ($firstType['name'])
+            {
                 case "Poison":
-                    // Logique pour Poison et secondType non Sol
+                    // Logic for Poison and secondType non-Ground-  ERROR FROM API
                     if ($secondType['name'] !== "Sol") {
                         $extractedPokemonData['pokemonTypes']['firstName'] = isset($secondType['name']) ? $secondType['name'] : null;
                         $extractedPokemonData['pokemonTypes']['firstImage'] = isset($secondType['image']) ? $secondType['image'] : null;
@@ -62,7 +63,7 @@ class APIPokemon {
                     break;
 
                 case "Vol":
-                    // Logique pour Vol et secondType non Normal
+                    // Logic for Flight and non-Normal secondType - ERROR FROM API
                     if ($secondType['name'] !== "Normal") {
                         $extractedPokemonData['pokemonTypes']['firstName'] = isset($secondType['name']) ? $secondType['name'] : null;
                         $extractedPokemonData['pokemonTypes']['firstImage'] = isset($secondType['image']) ? $secondType['image'] : null;
@@ -83,7 +84,8 @@ class APIPokemon {
                     $extractedPokemonData['pokemonTypes']['secondImage'] = isset($secondType['image']) ? $secondType['image'] : null;
                     break;
             }
-        } else {
+        } else
+        {
             $extractedPokemonData['pokemonTypes']['firstName'] = isset($firstType['name']) ? $firstType['name'] : null;
             $extractedPokemonData['pokemonTypes']['firstImage'] = isset($firstType['image']) ? $firstType['image'] : null;
             $extractedPokemonData['pokemonTypes']['secondName'] = isset($secondType['name']) ? $secondType['name'] : null;
@@ -98,22 +100,24 @@ class APIPokemon {
         return $extractedPokemonData;
     }
 
-    public function getPokemonByIdOrName($input) {
+    public function getPokemonByIdOrName($input)
+    {
         $formatInput = formatString($input);
 
-        // Déterminer si l'entrée est un ID ou un nom
+        // Determine if the entry is an ID or a name
         $isId = is_numeric($formatInput);
 
-        // Essayer de récupérer le Pokémon de la base de données
+        // Try to retrieve the Pokémon from the database
         $pokemon = $isId ? $this->getPokemonById($formatInput) : $this->getPokemonByName($formatInput);
 
         return $pokemon;
     }
 
-    public function getPokemonById($pokedexID) {
-        $apiUrl = $this->connexion();
+    public function getPokemonById($pokedexID)
+    {
+        $API_URL = $this->connexion();
 
-        // Créer un contexte de flux HTTP
+        // Create an HTTP flow context to handle 404 errors
         $context = stream_context_create([
             "http" => [
                 "method" => "GET",
@@ -123,49 +127,47 @@ class APIPokemon {
         ]);
 
         // GET request
-        $reponse = @file_get_contents("{$apiUrl}/pokemon/{$pokedexID}", false, $context);
+        $jsonResponse = @file_get_contents("{$API_URL}/pokemon/{$pokedexID}", false, $context);
 
-        if ($reponse === false) {
-            return null;
-        }
-        else {
-            $extractedData = $this->formatPokemonData($this->JSON($reponse));
-            return $extractedData;
-        }
-    }
+        if (!$jsonResponse) return null;
 
-    public function getPokemonByName($name) {
-        $apiUrl = $this->connexion();
-
-        // Créer un contexte de flux HTTP
-        $context = stream_context_create([
-            "http" => [
-                "method" => "GET",
-                "header" => "Accept-language: en\r\n" .
-                    "Cookie: foo=bar\r\n"
-            ]
-        ]);
-
-        // GET request
-        $reponse = @file_get_contents("{$apiUrl}/pokemon/{$name}", false, $context);
-
-        if ($reponse === false) return null;
-
-        $extractedData = $this->formatPokemonData($this->JSON($reponse));
+        $extractedData = $this->formatPokemonData($this->JSON($jsonResponse));
         return $extractedData;
     }
 
-    public function getTypesAll() {
-        $apiUrl = $this->connexion();
+    public function getPokemonByName($name) {
+        $API_URL = $this->connexion();
+
+        // Create an HTTP flow context to handle 404 errors
+        $context = stream_context_create([
+            "http" => [
+                "method" => "GET",
+                "header" => "Accept-language: en\r\n" .
+                    "Cookie: foo=bar\r\n"
+            ]
+        ]);
 
         // GET request
-        $reponse = file_get_contents("{$apiUrl}/types");
-        $reponseDecoded = $this->JSON($reponse);
+        $jsonResponse = @file_get_contents("{$API_URL}/pokemon/{$name}", false, $context);
+
+        if (!$jsonResponse) return null;
+
+        $extractedData = $this->formatPokemonData($this->JSON($jsonResponse));
+        return $extractedData;
+    }
+
+    public function getAllTypes()
+    {
+        $API_URL = $this->connexion();
+
+        // GET request
+        $jsonResponse = file_get_contents("{$API_URL}/types");
+        $reponse = $this->JSON($jsonResponse);
 
         $extractedData =[];
 
-        if ($reponseDecoded && is_array($reponseDecoded)) {
-            foreach ($reponseDecoded as $data) {
+        if ($reponse && is_array($reponse)) {
+            foreach ($reponse as $data) {
                 $extractedData[] = ($this->formatTypeData($data));
             };
         }
@@ -173,17 +175,18 @@ class APIPokemon {
         return $extractedData;
     }
 
-    public function getPokemonsAll() {
-        $apiUrl = $this->connexion();
+    public function getAllPokemons()
+    {
+        $API_URL = $this->connexion();
 
         // GET request
-        $reponse = file_get_contents("{$apiUrl}/pokemon");
-        $reponseDecoded = $this->JSON($reponse);
+        $jsonResponse = file_get_contents("{$API_URL}/pokemon");
+        $reponse = $this->JSON($jsonResponse);
 
         $extractedData =[];
 
-        if ($reponseDecoded && is_array($reponseDecoded)) {
-            foreach ($reponseDecoded as $data) {
+        if ($reponse && is_array($reponse)) {
+            foreach ($reponse as $data) {
                 $extractedData[] = ($this->formatPokemonData($data));
             };
         }

@@ -64,20 +64,32 @@ $component-name: nav;
       width: 100%;
 
       .pagination {
+        order: 2;
         display: flex;
         width: fit-content;
         gap: 0.5rem;
 
-        button.btn {
+        button.actual-page:after {
+          content: attr(value);
+        }
+
+        button:where(.prev-page, .next-page, .actual-page) {
           background: var(--global-neutral-transparent-white);
 
-          &[value="0"], &.disabled {
-            display: none;
+          &.disabled {
+            opacity: 0;
+            pointer-events: none;
+          }
+
+          &[value='0'] {
+            opacity: 0;
+            pointer-events: none;
           }
         }
       }
 
-      fieldset {
+      fieldset.type {
+        order: 3;
         border: none;
         display: flex;
         justify-content: center;
@@ -134,6 +146,10 @@ $component-name: nav;
             filter: grayscale(1);
           }
         }
+      }
+
+      .generation {
+        order: 1;
       }
     }
 
@@ -212,7 +228,7 @@ $component-name: nav;
 
       form {
 
-        .fieldset {
+        fieldset.type {
           order: 1;
         }
 
@@ -228,20 +244,40 @@ $component-name: nav;
     }
   }
 }
+
 @media (width < 576px) {
   .#{$component-name} {
 
     &__content {
       form {
-        flex-direction: column-reverse;
+        gap: 2rem 0.5rem;
+      ;
 
-        fieldset {
-
+        fieldset.type {
+          order: 1;
           label {
             width: 2rem;
             height: 2rem;
             font-size: 2rem;
           }
+        }
+
+        .pagination {
+          order: 3;
+          margin-right: 3rem;
+
+          .btn {
+            font-size: 1.125rem;
+
+            img {
+              height: 1rem;
+            }
+          }
+        }
+
+        #generation {
+          order: 2;
+          font-size: 1.125rem;
         }
       }
     }

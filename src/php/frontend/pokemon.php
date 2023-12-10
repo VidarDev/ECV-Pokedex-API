@@ -1,17 +1,18 @@
 <?php
-include __DIR__ . '/components/layouts/header.php';
-include __DIR__ . '/components/layouts/nav.php';
+include __DIR__ . '/layouts/header.php';
+include __DIR__ . '/layouts/nav.php';
 
 $dao = new DAO();
 
 if (isset($_GET["id"]) && $_GET["id"] != "random")
     $params = $_GET["id"];
 else {
-    $params = $dao->getRandomPokemonID();
+    $params = $dao->getIdRandomOfPokemon();
 }
 
 $pokemon = $dao->getPokemonByIdOrName($params);
-if($pokemon === false) {
+
+if(!$pokemon) {
     $pokemon = [
         'id' => '0',
         'name' => 'Unknown',
@@ -26,12 +27,12 @@ if($pokemon === false) {
     ];
 }
 if (isset($pokemon['id_next_evolution'])) {
-    $next_evolution = $dao->getEvolutionById($pokemon['id_next_evolution']);
+    $next_evolution = $dao->getPokemonEvolutionById($pokemon['id_next_evolution']);
     $pokemon['name_next_evolution'] = $next_evolution['name'] ?? "Découvrir ?";
     $pokemon['image_next_evolution'] = $next_evolution['image'] ?? "./img/unknown.png";
 }
 if (isset($pokemon['id_prev_evolution'])) {
-    $prev_evolution = $dao->getEvolutionById($pokemon['id_prev_evolution']);
+    $prev_evolution = $dao->getPokemonEvolutionById($pokemon['id_prev_evolution']);
     $pokemon['name_prev_evolution'] = $prev_evolution['name'] ?? "Découvrir ?";
     $pokemon['image_prev_evolution'] = $prev_evolution['image'] ?? "./img/unknown.png";
 }

@@ -12,4 +12,10 @@ body {
       width: calc(100dvw - 8rem);
     }
   }
+
+  @media (width < 576px) {
+    #main {
+      width: calc(100dvw - 4rem);
+    }
+  }
 }

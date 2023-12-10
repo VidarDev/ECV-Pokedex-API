@@ -7,7 +7,7 @@ $component-name: header;
   padding: 1.25rem 0;
   justify-content: center;
 
-  form {
+  form.search-pokemon {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -15,6 +15,15 @@ $component-name: header;
     background: var(--global-neutral-transparent-white);
     width: min(60dvw,500px);
     border-radius: 8px;
+
+    .btn.search {
+      margin-right: 0.75rem;
+    }
+
+    .btn.random {
+      padding: 0.5rem 0.25rem;
+      width: fit-content;
+    }
   }
 }
 
@@ -23,10 +32,19 @@ $component-name: header;
     padding: 2.5rem 0 1.25rem 0;
   }
 }
+
 @media (width < 576px) {
   .#{$component-name} {
-    form {
-      width: calc(100dvw - 8rem);
+    form.search-pokemon {
+      width: calc(100dvw - 6rem);
+    }
+  }
+}
+
+@media (width < 400px) {
+  .#{$component-name} {
+    form.search-pokemon {
+      width: calc(100dvw - 4rem);
     }
   }
 }

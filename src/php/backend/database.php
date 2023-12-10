@@ -5,7 +5,8 @@ include __DIR__ . '/functions.php';
 
 class DAO {
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->api = new APIPokemon();
     }
 
@@ -21,116 +22,179 @@ class DAO {
             $pdo = new PDO($dsn, $user, $pass);
             $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {
-            header('Location: /error.php'); // Redirection vers une page d'erreur
+            header('Location: /error.php'); // Redirect to an error page
             die("Database connection error: " . $e->getMessage());
         }
 
         return $pdo;
     }
 
-    public function checkTypesExists() {
+    public function checkIfTypesExists(): bool
+    {
         $pdo = $this->connexion();
 
-        $query = "SELECT id_type from dex_types;";
+        $query = "SELECT id_type from `dex_types`;";
 
         $stmt = $pdo->prepare($query);
         $stmt->execute();
-
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        if ($result === false) {
-            $this->addTypesAll();
+
+        if (!$result) {
+            $this->addAllTypes();
+            return false;
+        }
+        return true;
+    }
+
+    public function checkIfPokemonsExists(): bool
+    {
+        $pdo = $this->connexion();
+
+        $query = "SELECT id from `dex_pokemons`;";
+
+        $stmt = $pdo->prepare($query);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$result) return false;
+        return true;
+    }
+
+    // Single-use function: Its purpose is to initialize the database with a certain number of pokemons
+    public function addPokemonsInit($count)
+    {
+        set_time_limit(500); // Increases runtime limit to 500 seconds
+
+        for ($i = 1; $i < $count + 1; $i++) {
+            $pokemon=$this->api->getPokemonById($i);
+            $this->addPokemon($pokemon);
         }
     }
 
-    public function checkPokemonsExists() {
+    public function addPokemon($pokemonData)
+    {
         $pdo = $this->connexion();
 
-        $query = "SELECT id from dex_pokemons;";
+        try {
+            $pdo->beginTransaction();
 
-        $stmt = $pdo->prepare($query);
-        $stmt->execute();
+            $pokemonId = $pokemonData['pokemonId'];
 
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $result;
+            // Download the Pokémon image
+            $imagePath = downloadPokemonImage($pokemonData['pokemonImage'], $pokemonData['pokemonId'], $pokemonData['pokemonName']);
+
+            // Inserting general Pokémon information
+            $query = "
+                INSERT INTO `dex_pokemons` (id, name, image, generation, id_next_evolution, id_prev_evolution) 
+                VALUES (?, ?, ?, ?, ?, ?);
+            ";
+
+            $stmt = $pdo->prepare($query);
+            $stmt->execute([
+                $pokemonId,
+                $pokemonData['pokemonName'],
+                $imagePath,
+                $pokemonData['pokemonGeneration'],
+                $pokemonData['pokemonNextEvolId'],
+                $pokemonData['pokemonPrevEvolId']
+            ]);
+
+            // Inserting statistics
+            $query = "
+                INSERT INTO `dex_pokemons_stats` (id_pokemon, hp, attack, defense, special_attack, special_defense, speed) 
+                VALUES (?, ?, ?, ?, ?, ?, ?);
+            ";
+
+            $stmt = $pdo->prepare($query);
+            $stmt->execute([
+                $pokemonId,
+                $pokemonData['pokemonStats']['HP'],
+                $pokemonData['pokemonStats']['attack'],
+                $pokemonData['pokemonStats']['defense'],
+                $pokemonData['pokemonStats']['special_attack'],
+                $pokemonData['pokemonStats']['special_defense'],
+                $pokemonData['pokemonStats']['speed']
+            ]);
+
+            // Inserting types
+            $query = "
+                INSERT INTO `dex_pokemons_types` (id_pokemon, id_type_first, id_type_second) 
+                VALUES (?, ?, ?);
+            ";
+
+            $typeFirstId = $this->getIdTypeByName($pokemonData['pokemonTypes']['firstName']);
+            $typeSecondId = $this->getIdTypeByName($pokemonData['pokemonTypes']['secondName']);
+
+            $stmt = $pdo->prepare($query);
+            $stmt->execute([$pokemonId, $typeFirstId, $typeSecondId]);
+
+            $pdo->commit();
+        } catch (PDOException $e) {
+            $pdo->rollBack();
+            throw $e;
+        }
     }
 
-    public function getPokemonByIdOrName($input) {
+    public function addAllTypes()
+    {
+        $pdo = $this->connexion();
+
+        try {
+            $pdo->beginTransaction();
+
+            $types = $this->api->getAllTypes();
+            foreach($types as $type) {
+                $imagePath = downloadTypeImage($type['typeImage'], $type['typeName']);
+
+                $query = "INSERT INTO `dex_types` (id_type, name_FR, name_EN, image) VALUES (?, ?, ?, ?)";
+
+                $stmt = $pdo->prepare($query);
+                $stmt->execute([
+                    $type['typeId'],
+                    $type['typeName'],
+                    $type['typeEnglishName'],
+                    $imagePath
+                ]);
+            }
+
+            $pdo->commit();
+        } catch (PDOException $e) {
+            $pdo->rollBack();
+            throw $e;
+        }
+    }
+
+    public function getPokemonByIdOrName($input)
+    {
         $formatInput = formatString($input);
 
-        // Déterminer si l'entrée est un ID ou un nom
+        // Determine if the entry is an ID or a name
         $isId = is_numeric($formatInput);
 
-        // Essayer de récupérer le Pokémon de la base de données
-        $pokemon = $isId ? $this->getPokemonById($formatInput) : $this->getPokemonByName($formatInput);
+        // Try to retrieve the Pokémon from the database
+        $pokemon = $isId ?
+            $this->getPokemonById($formatInput) :
+            $this->getPokemonByName($formatInput);
 
-        // Si le Pokémon n'est pas trouvé en base de données, le récupérer via l'API
+        // If the Pokémon is not found in the database, retrieve it via the API
         if (!$pokemon) {
-            $pokemonData = $isId ? $this->api->getPokemonById($formatInput) : $this->api->getPokemonByName($formatInput);
+            $pokemonData = $isId ?
+                $this->api->getPokemonById($formatInput) :
+                $this->api->getPokemonByName($formatInput);
+
             if ($pokemonData) {
                 $this->addPokemon($pokemonData);
-                $pokemon = $isId ? $this->getPokemonById($formatInput) : $this->getPokemonByName($formatInput);
+                $pokemon = $isId ?
+                    $this->getPokemonById($formatInput) :
+                    $this->getPokemonByName($formatInput);
             }
         }
 
         return $pokemon;
     }
 
-    public function getRandomPokemonID() {
-        $pdo = $this->connexion();
-
-        $query = "SELECT id FROM `dex_pokemons` ORDER BY RAND () LIMIT 1;";
-
-        $stmt = $pdo->prepare($query);
-        $stmt->execute();
-
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        return $result['id'];
-    }
-
-    public function getGenerationsAll() {
-        $pdo = $this->connexion();
-
-        $query = "SELECT DISTINCT generation FROM `dex_pokemons` ORDER BY generation ASC;";
-
-        $stmt = $pdo->prepare($query);
-        $stmt->execute();
-
-        return $stmt->fetchAll();
-    }
-
-    public function getTypesAll() {
-        $pdo = $this->connexion();
-
-        $query = "SELECT DISTINCT id_type, name_FR, image FROM `dex_types` ORDER BY id_type ASC;";
-
-        $stmt = $pdo->prepare($query);
-        $stmt->execute();
-
-        return $stmt->fetchAll();
-    }
-
-
-    public function getEvolutionById($pokedexID) {
-        $pdo = $this->connexion();
-
-        $query = "
-            SELECT 
-                p.name,
-                p.image
-            FROM 
-                `dex_pokemons` p
-            WHERE 
-                p.id = ?;
-        ";
-
-        $stmt = $pdo->prepare($query);
-        $stmt->execute([$pokedexID]);
-
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
-
-    public function getPokemonById($pokedexID) {
+    public function getPokemonById($pokedexID)
+    {
         $pdo = $this->connexion();
 
         $query = "
@@ -166,11 +230,11 @@ class DAO {
 
         $stmt = $pdo->prepare($query);
         $stmt->execute([$pokedexID]);
-
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function getPokemonByName($name) {
+    public function getPokemonByName($name)
+    {
         $pdo = $this->connexion();
 
         $query = "
@@ -206,16 +270,27 @@ class DAO {
 
         $stmt = $pdo->prepare($query);
         $stmt->execute([$name]);
-
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function getPokemonsList($generation, $type, $page) {
+    public function getPokemonEvolutionById($pokedexID)
+    {
         $pdo = $this->connexion();
 
-        $limit = 25;
-        $limitM = $limit + 1;
-        $offset = ($page - 1) * $limit;
+        $query = "SELECT name, image FROM `dex_pokemons` WHERE id = ?;";
+
+        $stmt = $pdo->prepare($query);
+        $stmt->execute([$pokedexID]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function getListPokemons($generation, $type, $page)
+    {
+        $pdo = $this->connexion();
+
+        $displayLimit = 24;
+        $limit = $displayLimit + 1;
+        $offset = ($page - 1) * $displayLimit;
 
         $query = "
             SELECT 
@@ -235,23 +310,21 @@ class DAO {
         ";
 
         $stmt = $pdo->prepare($query);
-
         $stmt->bindParam(':generation', $generation, PDO::PARAM_INT);
         $stmt->bindParam(':type', $type, PDO::PARAM_INT);
         $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
-        $stmt->bindParam(':limit', $limitM, PDO::PARAM_INT);
-
+        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
         $stmt->execute();
-
         return $stmt->fetchAll();
     }
 
-    public function getPokemonsListAllGeneration($type, $page) {
+    public function getListPokemonsWithType($type, $page)
+    {
         $pdo = $this->connexion();
 
-        $limit = 25;
-        $limitM = $limit + 1;
-        $offset = ($page - 1) * $limit;
+        $displayLimit = 24;
+        $limit = $displayLimit + 1;
+        $offset = ($page - 1) * $displayLimit;
 
         $query = "
             SELECT 
@@ -270,80 +343,99 @@ class DAO {
         ";
 
         $stmt = $pdo->prepare($query);
-
         $stmt->bindParam(':type', $type, PDO::PARAM_INT);
         $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
-        $stmt->bindParam(':limit', $limitM, PDO::PARAM_INT);
-
+        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
         $stmt->execute();
-
         return $stmt->fetchAll();
     }
 
-    public function getPokemonsListAllTypes($generation, $page) {
+    public function getListPokemonsWithGeneration($generation, $page)
+    {
         $pdo = $this->connexion();
 
-        $limit = 25;
-        $limitM = $limit + 1;
-        $offset = ($page - 1) * $limit;
+        $displayLimit = 24;
+        $limit = $displayLimit + 1;
+        $offset = ($page - 1) * $displayLimit;
 
-        $query = "
-            SELECT 
-                p.id 
-            FROM 
-                `dex_pokemons` p
-            WHERE 
-                p.generation = :generation
-            GROUP BY 
-                p.id 
-            ORDER BY 
-                p.id 
-            LIMIT :limit 
-            OFFSET :offset ;
-        ";
+        $query = "SELECT p.id FROM `dex_pokemons` p WHERE p.generation = :generation GROUP BY p.id ORDER BY p.id LIMIT :limit OFFSET :offset ;";
 
         $stmt = $pdo->prepare($query);
-
         $stmt->bindParam(':generation', $generation, PDO::PARAM_INT);
         $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
-        $stmt->bindParam(':limit', $limitM, PDO::PARAM_INT);
-
+        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
         $stmt->execute();
-
         return $stmt->fetchAll();
     }
-    public function getPokemonsListAllTypesAndGeneration($page) {
+
+    public function getListPokemonsWithoutTypeAndGeneration($page)
+    {
         $pdo = $this->connexion();
 
-        $limit = 25;
-        $limitM = $limit + 1;
-        $offset = ($page - 1) * $limit;
+        $displayLimit = 24;
+        $limit = $displayLimit + 1;
+        $offset = ($page - 1) * $displayLimit;
 
-        $query = "
-            SELECT 
-                p.id 
-            FROM 
-                `dex_pokemons` p
-            GROUP BY 
-                p.id 
-            ORDER BY 
-                p.id 
-            LIMIT :limit 
-            OFFSET :offset ;
-        ";
+        $query = "SELECT p.id FROM `dex_pokemons` p GROUP BY p.id ORDER BY p.id LIMIT :limit OFFSET :offset;";
 
         $stmt = $pdo->prepare($query);
 
         $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
-        $stmt->bindParam(':limit', $limitM, PDO::PARAM_INT);
-
+        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
         $stmt->execute();
-
         return $stmt->fetchAll();
     }
 
+    public function getIdRandomOfPokemon()
+    {
+        $pdo = $this->connexion();
 
-    public function getPokemonCard($pokedexID) {
+        $query = "SELECT id FROM `dex_pokemons` ORDER BY RAND () LIMIT 1;";
+
+        $stmt = $pdo->prepare($query);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $result['id'];
+    }
+
+    public function getIdTypeByName($name)
+    {
+        $pdo = $this->connexion();
+
+        $query = "SELECT id_type from `dex_types` where name_FR = ?";
+
+        $stmt = $pdo->prepare($query);
+        $stmt->execute([$name]);
+        $reponse = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $reponse['id_type'] ?? null;
+    }
+
+    public function getAllGenerations()
+    {
+        $pdo = $this->connexion();
+
+        $query = "SELECT DISTINCT generation FROM `dex_pokemons` ORDER BY generation ASC;";
+
+        $stmt = $pdo->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
+    public function getAllTypes()
+    {
+        $pdo = $this->connexion();
+
+        $query = "SELECT DISTINCT id_type, name_FR, image FROM `dex_types` ORDER BY id_type ASC;";
+
+        $stmt = $pdo->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
+    public function getCardPokemon($pokedexID)
+    {
         $pdo = $this->connexion();
 
         $query = "
@@ -371,159 +463,42 @@ class DAO {
 
         $stmt = $pdo->prepare($query);
         $stmt->execute([$pokedexID]);
-
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function getTypeIdByName($name) {
-        $pdo = $this->connexion();
-
-        $query = "SELECT id_type from `dex_types` where name_FR = ?";
-
-        $stmt = $pdo->prepare($query);
-        $stmt->execute([$name]);
-
-        $reponse = $stmt->fetch(PDO::FETCH_ASSOC);
-        $result = isset($reponse['id_type']) ? $reponse['id_type'] : null;
-
-        return $result;
-    }
-
-    public function addTypesAll() {
-        $pdo = $this->connexion();
-
-        try {
-            $pdo->beginTransaction();
-
-            $types = $this->api->getTypesAll();
-
-            foreach($types as $type) {
-
-                $imagePath = downloadTypeImage($type['typeImage'], $type['typeName']);
-
-                $query = "INSERT INTO `dex_types` (id_type, name_FR, name_EN, image) VALUES (?, ?, ?, ?)";
-
-                $stmt = $pdo->prepare($query);
-                $stmt->execute([
-                    $type['typeId'],
-                    $type['typeName'],
-                    $type['typeEnglishName'],
-                    $imagePath
-                ]);
-            }
-
-            $pdo->commit();
-        } catch (PDOException $e) {
-            $pdo->rollBack();
-            throw $e;
-        }
-    }
-
-    public function addPokemonsAll() {
-        set_time_limit(500); // Augmente la limite à 500 secondes
-
-        $pokemons = $this->api->getPokemonsAll();
-
-        foreach($pokemons as $pokemon) {
-            $this->addPokemon($pokemon);
-        }
-    }
-
-    public function addPokemon($pokemonData) {
-        $pdo = $this->connexion();
-
-        try {
-            $pdo->beginTransaction();
-
-            $pokemonId = $pokemonData['pokemonId'];
-
-            // Télécharger l'image du Pokémon
-            $imagePath = downloadPokemonImage($pokemonData['pokemonImage'], $pokemonData['pokemonId'], $pokemonData['pokemonName']);
-
-            // Insertion des informations générales du Pokémon
-            $query = "
-                INSERT INTO `dex_pokemons` (id, name, image, generation, id_next_evolution, id_prev_evolution) 
-                VALUES (?, ?, ?, ?, ?, ?);
-            ";
-
-            $stmt = $pdo->prepare($query);
-            $stmt->execute([
-                $pokemonId,
-                $pokemonData['pokemonName'],
-                $imagePath,
-                $pokemonData['pokemonGeneration'],
-                $pokemonData['pokemonNextEvolId'],
-                $pokemonData['pokemonPrevEvolId']
-            ]);
-
-            // Insertion des statistiques
-            $query = "
-                INSERT INTO `dex_pokemons_stats` (id_pokemon, hp, attack, defense, special_attack, special_defense, speed) 
-                VALUES (?, ?, ?, ?, ?, ?, ?);
-            ";
-
-            $stmt = $pdo->prepare($query);
-            $stmt->execute([
-                $pokemonId,
-                $pokemonData['pokemonStats']['HP'],
-                $pokemonData['pokemonStats']['attack'],
-                $pokemonData['pokemonStats']['defense'],
-                $pokemonData['pokemonStats']['special_attack'],
-                $pokemonData['pokemonStats']['special_defense'],
-                $pokemonData['pokemonStats']['speed']
-            ]);
-
-            // Insertion des types
-            $query = "
-                INSERT INTO `dex_pokemons_types` (id_pokemon, id_type_first, id_type_second) 
-                VALUES (?, ?, ?);
-            ";
-
-            $typeFirstId = $this->getTypeIdByName($pokemonData['pokemonTypes']['firstName']);
-            $typeSecondId = $this->getTypeIdByName($pokemonData['pokemonTypes']['secondName']);
-
-            $stmt = $pdo->prepare($query);
-            $stmt->execute([$pokemonId, $typeFirstId, $typeSecondId]);
-
-            $pdo->commit();
-        } catch (PDOException $e) {
-            $pdo->rollBack();
-            throw $e;
-        }
-    }
-
-    public function UIPokemonCard($pokemonCard) {
+    public function UIPokemonCard($pokemonCard): string
+    {
         $formatPokedexId = formatPokedexId($pokemonCard['id']);
 
         if(isset($pokemonCard['id_type_second'])){
             $code = "
-                <a class='pokemon-card {$pokemonCard['pokemon_type_first_name_EN']} ' href='?id={$pokemonCard['id']} '>
+                <a class='pokemon-card {$pokemonCard['pokemon_type_first_name_EN']}' href='?id={$pokemonCard['id']}'>
                     <div class='pokemon-card-top'>
-                        <span class='pokemon-card-top__name'>{$pokemonCard['name']} </span>
-                        <span class='pokemon-card-top__pokedex'>#{$formatPokedexId} </span>
+                        <span class='pokemon-card-top__name'>{$pokemonCard['name']}</span>
+                        <span class='pokemon-card-top__pokedex'>#$formatPokedexId</span>
                     </div>
                     <div class='pokemon-card-bottom'>
                         <div class='pokemon-card-bottom__types'>
-                            <img src='{$pokemonCard['pokemon_type_first_image']} ' role='img' alt='{$pokemonCard['pokemon_type_first_name_FR']} ' title='{$pokemonCard['pokemon_type_first_name_FR']} ' aria-label='{$pokemonCard['pokemon_type_first_name_FR']} ' loading='lazy' width='200' height='200'/>
-                            <img src='{$pokemonCard['pokemon_type_second_image']} ' role='img' alt='{$pokemonCard['pokemon_type_second_name_FR']} ' title='{$pokemonCard['pokemon_type_second_name_FR']} ' aria-label='{$pokemonCard['pokemon_type_second_name_FR']} ' loading='lazy' width='200' height='200'/>
+                            <img src='{$pokemonCard['pokemon_type_first_image']}' role='img' alt='{$pokemonCard['pokemon_type_first_name_FR']}' title='{$pokemonCard['pokemon_type_first_name_FR']}' aria-label='{$pokemonCard['pokemon_type_first_name_FR']}' loading='lazy' width='200' height='200'/>
+                            <img src='{$pokemonCard['pokemon_type_second_image']}' role='img' alt='{$pokemonCard['pokemon_type_second_name_FR']}' title='{$pokemonCard['pokemon_type_second_name_FR']}' aria-label='{$pokemonCard['pokemon_type_second_name_FR']}' loading='lazy' width='200' height='200'/>
                         </div>
-                        <img class='pokemon-card-bottom__image' src='{$pokemonCard['image']} ' role='img' alt='{$pokemonCard['name']} ' title='{$pokemonCard['name']} ' aria-label='{$pokemonCard['name']} ' loading='lazy' width='200' height='200'/>
+                        <img class='pokemon-card-bottom__image' src='{$pokemonCard['image']}' role='img' alt='{$pokemonCard['name']}' title='{$pokemonCard['name']}' aria-label='{$pokemonCard['name']}' loading='lazy' width='200' height='200'/>
                     </div>
                 </a>
             ";
         }
         else {
             $code = "
-                <a class='pokemon-card {$pokemonCard['pokemon_type_first_name_EN']} ' href='?id={$pokemonCard['id']} '>
+                <a class='pokemon-card {$pokemonCard['pokemon_type_first_name_EN']}' href='?id={$pokemonCard['id']}'>
                     <div class='pokemon-card-top'>
-                        <span class='pokemon-card-top__name'>{$pokemonCard['name']} </span>
-                        <span class='pokemon-card-top__pokedex'>#{$formatPokedexId} </span>
+                        <span class='pokemon-card-top__name'>{$pokemonCard['name']}</span>
+                        <span class='pokemon-card-top__pokedex'>#$formatPokedexId</span>
                     </div>
                     <div class='pokemon-card-bottom'>
                         <div class='pokemon-card-bottom__types'>
-                            <img src='{$pokemonCard['pokemon_type_first_image']} ' role='img' alt='{$pokemonCard['pokemon_type_first_name_FR']} ' title='{$pokemonCard['pokemon_type_first_name_FR']} ' aria-label='{$pokemonCard['pokemon_type_first_name_FR']} ' loading='lazy' width='200' height='200'/>
+                            <img src='{$pokemonCard['pokemon_type_first_image']}' role='img' alt='{$pokemonCard['pokemon_type_first_name_FR']}' title='{$pokemonCard['pokemon_type_first_name_FR']}' aria-label='{$pokemonCard['pokemon_type_first_name_FR']}' loading='lazy' width='200' height='200'/>
                         </div>
-                        <img class='pokemon-card-bottom__image' src='{$pokemonCard['image']} ' role='img' alt='{$pokemonCard['name']} ' title='{$pokemonCard['name']} ' aria-label='{$pokemonCard['name']} ' loading='lazy' width='200' height='200'/>
+                        <img class='pokemon-card-bottom__image' src='{$pokemonCard['image']}' role='img' alt='{$pokemonCard['name']}' title='{$pokemonCard['name']}' aria-label='{$pokemonCard['name']}' loading='lazy' width='200' height='200'/>
                     </div>
                 </a>
             ";
@@ -531,6 +506,6 @@ class DAO {
 
         return $code;
     }
+
 }
 
-?>

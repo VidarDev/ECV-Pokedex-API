@@ -1,6 +1,9 @@
 <?php
 
 // Retrieves variables from the .env file
+/**
+ * @throws Exception
+ */
 function loadEnv() {
     $envPath = __DIR__ . '/../../../.env';
     if (!file_exists($envPath)) {
@@ -35,4 +38,7 @@ function loadEnv() {
     }
 }
 
-loadEnv();
+try {
+    loadEnv();
+} catch (Exception $e) {
+}

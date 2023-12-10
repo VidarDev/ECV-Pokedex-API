@@ -1,25 +1,25 @@
 <?php
-function formatString($str) {
-    // Supprime tous les espaces
+function formatString($str): string
+{
+    // Remove all spaces
     $strNoSpaces = str_replace(' ', '', $str);
 
-    // Convertit la chaîne en minuscules
+    // Convert string to lowercase
     $strLowercase = strtolower($strNoSpaces);
 
-    // Convertit le premier caractère en majuscule
-    $strFiltered = ucfirst($strLowercase);
-
-    return $strFiltered;
+    // Converts first character to uppercase
+    return ucfirst($strLowercase);
 }
 
-function formatPokedexId($number) {
+function formatPokedexId($number): string
+{
     return sprintf("%03d", $number);
 }
 
 function downloadPokemonImage($imageUrl, $pokedexId, $name) {
-    $imagePath = "./img/pokemons/{$pokedexId}_{$name}.png";
+    $imagePath = "./img/pokemons/{$pokedexId}_$name.png";
 
-    // Utilisez file_get_contents et file_put_contents pour télécharger et sauvegarder l'image
+    // Use file_get_contents and file_put_contents to download and save the image
     $imageData = file_get_contents($imageUrl);
     if ($imageData !== false && !file_exists($imagePath)) {
         file_put_contents($imagePath, $imageData);
@@ -29,9 +29,9 @@ function downloadPokemonImage($imageUrl, $pokedexId, $name) {
 }
 
 function downloadTypeImage($imageUrl, $name) {
-    $imagePath = "./img/types/{$name}.png";
+    $imagePath = "./img/types/$name.png";
 
-    // Utilisez file_get_contents et file_put_contents pour télécharger et sauvegarder l'image
+    // Use file_get_contents and file_put_contents to download and save the image
     $imageData = file_get_contents($imageUrl);
     if ($imageData !== false && !file_exists($imagePath)) {
         file_put_contents($imagePath, $imageData);
@@ -40,4 +40,3 @@ function downloadTypeImage($imageUrl, $name) {
     return $imageData !== false ? $imagePath : null;
 }
 
-?>

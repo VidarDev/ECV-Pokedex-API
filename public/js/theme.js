@@ -1,4 +1,5 @@
-function toogleMenu(element) {
+function toogleMenu(element)
+{
     if (element.classList.contains("show")) {
         element.classList.remove("show");
     } else {
@@ -6,14 +7,15 @@ function toogleMenu(element) {
     }
 }
 
-function displayCard(data) {
+function UICards(data) {
     const container = document.querySelector("#nav .card-container");
+    const nextButton = document.getElementById('next-page');
     container.innerHTML = "";
 
-    if (data.length < 26) {
-        document.getElementById('next-page').classList.add('disabled');
+    if (data.length < 25) {
+        nextButton.classList.add('disabled');
     } else {
-        document.getElementById('next-page').classList.remove('disabled');
+        nextButton.classList.remove('disabled');
     }
 
     for (let i = 0; i < data.length - 1; i++) {
@@ -21,17 +23,21 @@ function displayCard(data) {
     }
 }
 
-function listPokemon(generation, type, page) {
-    // Données à envoyer
+function displayMenuList(data)
+{
+    UICards(data);
+}
+
+function AJAXMenuList(generation, type, page)
+{
+    // Data to send
     let data = {
         generation: generation,
         type: type,
         page: page
     };
 
-    console.log(data);
-
-    // Envoi de la requête AJAX avec fetch
+    // Sending AJAX request with fetch
     fetch('../ajax/list.php', {
         method: 'POST',
         headers: {
@@ -41,56 +47,58 @@ function listPokemon(generation, type, page) {
     })
         .then(response => response.json())
         .then(data => {
-            displayCard(data);
+            displayMenuList(data);
         })
-        .catch(error => console.error('Erreur:', error));
+        .catch(error => {
+            document.querySelector("#nav .card-container").innerHTML = "";
+        });
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    const radomButton = document.getElementById('random');
+    radomButton.addEventListener('click', () => {
+        location.search = 'id=random';
+    });
+
     const menuButton = document.getElementById('nav-menu');
     const navElement = document.getElementById('nav');
-
     menuButton.addEventListener('click', () => {
         toogleMenu(navElement);
     });
 
-    document.getElementById('random').addEventListener('click', () => {
-        location.search = 'id=random';
-    });
+    let inputValueGen = document.filter.generation;
+    let inputValueType = document.filter.types;
+    let inputValueTypePrev = null;
 
-    var container = document.querySelector("#nav .card-container");
-    var inputValueGen = document.filter.generation;
-    var inputValueType = document.filter.types;
-    var inputValueTypePrev = null;
-    var nextButton = document.getElementById('next-page');
-    var prevButton = document.getElementById('prev-page');
-    var actualPage = nextButton.value - 1;
+    let nextButton = document.getElementById('next-page');
+    let prevButton = document.getElementById('prev-page');
+    let actualPage = document.getElementById('actual-page');
 
-    for (var i = 0; i < inputValueType.length; i++) {
+    for (let i = 0; i < inputValueType.length; i++) {
         inputValueType[i].addEventListener('change', function() {
             inputValueTypePrev ? inputValueTypePrev : null;
-            if (this !== inputValueTypePrev) {
-                inputValueTypePrev = this;
-            }
+            if (this !== inputValueTypePrev) inputValueTypePrev = this;
+
             nextButton.value = 2;
             prevButton.value = 0;
-            listPokemon(inputValueGen.value, this.value, actualPage)
+            AJAXMenuList(inputValueGen.value, this.value, actualPage.value);
         });
     }
     inputValueGen.addEventListener('change', () => {
         nextButton.value = 2;
         prevButton.value = 0;
-        listPokemon(inputValueGen.value, inputValueType.value, actualPage)
+        AJAXMenuList(inputValueGen.value, inputValueType.value, actualPage.value);
     });
-
     nextButton.addEventListener('click', () => {
-        listPokemon(inputValueGen.value, inputValueType.value, nextButton.value);
+        AJAXMenuList(inputValueGen.value, inputValueType.value, nextButton.value);
         nextButton.value++;
         prevButton.value++;
     });
     prevButton.addEventListener('click', () => {
-        listPokemon(inputValueGen.value, inputValueType.value, prevButton.value);
+        AJAXMenuList(inputValueGen.value, inputValueType.value, prevButton.value);
         prevButton.value--;
         nextButton.value--;
-    })
+    });
+
+    AJAXMenuList(inputValueGen.value, inputValueType.value, actualPage.value);
 });

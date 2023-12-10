@@ -11,16 +11,16 @@
         $params = json_decode($inputJSON, true); // Convertir en tableau associatif
 
         if($params['generation'] !== '0' && $params['type'] !== '0') {
-            $responseSql = $dao->getPokemonsList($params['generation'], $params['type'], $params['page']);
+            $responseSql = $dao->getListPokemons($params['generation'], $params['type'], $params['page']);
         } else {
             if ($params['generation'] === '0' && $params['type'] !== '0') {
-                $responseSql = $dao->getPokemonsListAllGeneration($params['type'], $params['page']);
+                $responseSql = $dao->getListPokemonsWithType($params['type'], $params['page']);
             }
             elseif ($params['generation'] !== '0' && $params['type'] === '0') {
-                $responseSql = $dao->getPokemonsListAllTypes($params['generation'], $params['page']);
+                $responseSql = $dao->getListPokemonsWithGeneration($params['generation'], $params['page']);
             }
             else {
-                $responseSql = $dao->getPokemonsListAllTypesAndGeneration($params['page']);
+                $responseSql = $dao->getListPokemonsWithoutTypeAndGeneration($params['page']);
             }
         }
 
@@ -34,4 +34,3 @@
         header('Content-Type: application/json');
         echo json_encode($response);
     }
-?>
