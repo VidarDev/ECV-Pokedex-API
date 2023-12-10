@@ -10,15 +10,18 @@ function toogleMenu(element)
 function UICards(data) {
     const container = document.querySelector("#nav .card-container");
     const nextButton = document.getElementById('next-page');
+    let dataLength;
     container.innerHTML = "";
 
     if (data.length < 25) {
+        dataLength = data.length;
         nextButton.classList.add('disabled');
     } else {
+        dataLength = data.length - 1;
         nextButton.classList.remove('disabled');
     }
 
-    for (let i = 0; i < data.length - 1; i++) {
+    for (let i = 0; i < dataLength; i++) {
         container.innerHTML += data[i];
     }
 }
