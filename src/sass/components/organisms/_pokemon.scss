@@ -185,6 +185,10 @@ $component-name: pokemon;
         }
       }
     }
+
+    .pokemon-bottom {
+      margin-bottom: 6rem;
+    }
   }
 
   @media (width < 576px) {

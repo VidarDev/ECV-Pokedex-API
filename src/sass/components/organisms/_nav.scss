@@ -56,11 +56,26 @@ $component-name: nav;
 
     form {
       display: flex;
-      flex-direction: column;
+      flex-wrap: wrap;
+      justify-content: space-between;
       gap: 1rem;
       height: fit-content;
       background: var(--global-neutral-transparent);
       width: 100%;
+
+      .pagination {
+        display: flex;
+        width: fit-content;
+        gap: 0.5rem;
+
+        button.btn {
+          background: var(--global-neutral-transparent-white);
+
+          &[value="0"], &.disabled {
+            display: none;
+          }
+        }
+      }
 
       fieldset {
         border: none;
@@ -77,6 +92,22 @@ $component-name: nav;
           align-items: center;
           font-size: 2rem;
 
+          &.all {
+            :is(input[type="checkbox"], input[type="radio"]) {
+              &:checked ~ img {
+                filter: brightness(0) invert(1);
+              }
+
+              &:hover ~ img {
+                filter: brightness(0) invert(1);
+              }
+
+              ~ img {
+                filter: brightness(0) invert(0.7);
+              }
+            }
+          }
+
           input[type="checkbox"], input[type="radio"] {
             position: absolute;
             width: 1px;
@@ -89,6 +120,10 @@ $component-name: nav;
             white-space: nowrap;
 
             &:checked ~ img {
+              filter: grayscale(0);
+            }
+
+            &:hover ~ img {
               filter: grayscale(0);
             }
           }
@@ -176,7 +211,19 @@ $component-name: nav;
       padding: 2rem;
 
       form {
-        flex-direction: column-reverse;
+
+        .fieldset {
+          order: 1;
+        }
+
+        .pagination {
+          order: 3;
+          margin-right: 64px;
+        }
+
+        #generation {
+          order: 2;
+        }
       }
     }
   }

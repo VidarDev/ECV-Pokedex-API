@@ -11,16 +11,16 @@
         $params = json_decode($inputJSON, true); // Convertir en tableau associatif
 
         if($params['generation'] !== '0' && $params['type'] !== '0') {
-            $responseSql = $dao->getPokemonsList($params['generation'], $params['type'], 1);
+            $responseSql = $dao->getPokemonsList($params['generation'], $params['type'], $params['page']);
         } else {
             if ($params['generation'] === '0' && $params['type'] !== '0') {
-                $responseSql = $dao->getPokemonsListAllGeneration($params['type'], 1);
+                $responseSql = $dao->getPokemonsListAllGeneration($params['type'], $params['page']);
             }
             elseif ($params['generation'] !== '0' && $params['type'] === '0') {
-                $responseSql = $dao->getPokemonsListAllTypes($params['generation'], 1);
+                $responseSql = $dao->getPokemonsListAllTypes($params['generation'], $params['page']);
             }
             else {
-                $responseSql = $dao->getPokemonsListAllTypesAndGeneration(1);
+                $responseSql = $dao->getPokemonsListAllTypesAndGeneration($params['page']);
             }
         }
 

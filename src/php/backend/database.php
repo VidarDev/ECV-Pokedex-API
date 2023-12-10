@@ -214,7 +214,8 @@ class DAO {
         $pdo = $this->connexion();
 
         $limit = 25;
-        $offset = ($page - 1) * 25;
+        $limitM = $limit + 1;
+        $offset = ($page - 1) * $limit;
 
         $query = "
             SELECT 
@@ -238,7 +239,7 @@ class DAO {
         $stmt->bindParam(':generation', $generation, PDO::PARAM_INT);
         $stmt->bindParam(':type', $type, PDO::PARAM_INT);
         $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
-        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindParam(':limit', $limitM, PDO::PARAM_INT);
 
         $stmt->execute();
 
@@ -249,7 +250,8 @@ class DAO {
         $pdo = $this->connexion();
 
         $limit = 25;
-        $offset = ($page - 1) * 25;
+        $limitM = $limit + 1;
+        $offset = ($page - 1) * $limit;
 
         $query = "
             SELECT 
@@ -271,7 +273,7 @@ class DAO {
 
         $stmt->bindParam(':type', $type, PDO::PARAM_INT);
         $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
-        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindParam(':limit', $limitM, PDO::PARAM_INT);
 
         $stmt->execute();
 
@@ -282,7 +284,8 @@ class DAO {
         $pdo = $this->connexion();
 
         $limit = 25;
-        $offset = ($page - 1) * 25;
+        $limitM = $limit + 1;
+        $offset = ($page - 1) * $limit;
 
         $query = "
             SELECT 
@@ -303,7 +306,7 @@ class DAO {
 
         $stmt->bindParam(':generation', $generation, PDO::PARAM_INT);
         $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
-        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindParam(':limit', $limitM, PDO::PARAM_INT);
 
         $stmt->execute();
 
@@ -313,7 +316,8 @@ class DAO {
         $pdo = $this->connexion();
 
         $limit = 25;
-        $offset = ($page - 1) * 25;
+        $limitM = $limit + 1;
+        $offset = ($page - 1) * $limit;
 
         $query = "
             SELECT 
@@ -331,7 +335,7 @@ class DAO {
         $stmt = $pdo->prepare($query);
 
         $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
-        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindParam(':limit', $limitM, PDO::PARAM_INT);
 
         $stmt->execute();
 
