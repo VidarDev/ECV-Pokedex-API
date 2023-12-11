@@ -12,6 +12,14 @@ CREATE TABLE dex_pokemons (
     id_prev_evolution INT
 );
 
+-- Table dex_types
+CREATE TABLE dex_types (
+    id_type INT NOT NULL PRIMARY KEY,
+    name_FR VARCHAR(255) NOT NULL,
+    name_EN VARCHAR(255) NOT NULL,
+    image VARCHAR(255) NOT NULL
+);
+
 -- Table dex_pokemon_stats
 CREATE TABLE dex_pokemons_stats (
     id_pokemon INT,
@@ -32,14 +40,6 @@ CREATE TABLE dex_pokemons_types (
     FOREIGN KEY (id_pokemon) REFERENCES dex_pokemons(id),
     FOREIGN KEY (id_type_first) REFERENCES dex_types(id_type),
     FOREIGN KEY (id_type_second) REFERENCES dex_types(id_type)
-);
-
--- Table dex_types
-CREATE TABLE dex_types (
-    id_type INT NOT NULL PRIMARY KEY,
-    name_FR VARCHAR(255) NOT NULL,
-    name_EN VARCHAR(255) NOT NULL,
-    image VARCHAR(255) NOT NULL
 );
 
 
